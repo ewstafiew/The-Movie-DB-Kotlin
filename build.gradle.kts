@@ -4,15 +4,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.2.0-rc03")
+        classpath("com.android.tools.build:gradle:8.4.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.5")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.48")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.49")
 //        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Libs.kotlinVersion}")
 //        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Libs.navigationVersion}")
 //        classpath("com.google.dagger:hilt-android-gradle-plugin:${Libs.daggerHiltVersion}")
-        classpath("com.google.gms:google-services:4.4.0")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
+        classpath("com.google.gms:google-services:4.4.1")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.1")
     }
 }
 
