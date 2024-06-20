@@ -47,6 +47,7 @@ open class StateViewModel : ViewModel() {
             is UnknownHostException -> {
                 _errorEvent.value = ErrorEvent.Network
             }
+
             is ConnectException -> {
                 _errorEvent.value = ErrorEvent.Network
             }
@@ -54,6 +55,7 @@ open class StateViewModel : ViewModel() {
             is SocketTimeoutException -> {
                 _errorEvent.value = ErrorEvent.Timeout
             }
+
             else -> {
                 // convert throwable to base exception to get error information
                 val baseException = e.toBaseException()
@@ -61,6 +63,7 @@ open class StateViewModel : ViewModel() {
                     HttpURLConnection.HTTP_UNAUTHORIZED -> {
                         _errorEvent.value = ErrorEvent.Unauthorized
                     }
+
                     else -> {
                         _errorEvent.value = ErrorEvent.Unknown(baseException = baseException)
                     }

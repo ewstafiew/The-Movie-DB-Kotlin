@@ -24,12 +24,10 @@ android {
     namespace = appId
     defaultConfig {
         applicationId = appId
-        buildToolsVersion = "35.0.0-rc3"
+        buildToolsVersion = "35.0.0"
         minSdk = 23
-//        compileSdkPreview = "VanillaIceCream"
-//        targetSdkPreview = "VanillaIceCream"
-        compileSdk = 34
-        targetSdk = 34
+        compileSdk = 35
+        targetSdk = 35
         multiDexEnabled = true
         vectorDrawables {
             useSupportLibrary = true
@@ -159,14 +157,14 @@ dependencies {
     // https://developer.android.com/kotlin/ktx/extensions-list
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-ktx:1.9.0")
-    implementation("androidx.fragment:fragment-ktx:1.7.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.1")
 
     // Lifecycle
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
 //    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.3")
 
     // Preferences DataStore
     // https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html
@@ -230,7 +228,7 @@ dependencies {
 
     // firebase
     // https://firebase.google.com/docs/android/setup
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
@@ -374,7 +372,7 @@ dependencies {
     // https://developer.android.com/jetpack/compose/interop/adding
     // https://developer.android.com/jetpack/compose/setup
 //    implementation("androidx.compose.compiler:compiler:1.4.5")
-    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
@@ -390,7 +388,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     // Animations
-    implementation("androidx.compose.animation:animation:1.6.7")
+    implementation("androidx.compose.animation:animation:1.6.8")
     // Constraint layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     // Optional - Included automatically by material, only add when you need
@@ -398,24 +396,24 @@ dependencies {
     // custom design system based on Foundation)
 //    implementation("androidx.compose.material:material-icons-core")
     // Optional - Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
     // Optional - Add window size utils
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
     // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.9.0")
     // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     // Optional - Integration with LiveData
 //    implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     // Lifecycle utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // https://github.com/skydoves/landscapist
 //    implementation("com.github.skydoves:landscape-bom:2.1.7")
-    implementation("com.github.skydoves:landscapist-glide:2.3.3")
-    implementation("com.github.skydoves:landscapist-placeholder:2.3.3")
+    implementation("com.github.skydoves:landscapist-glide:2.3.6")
+    implementation("com.github.skydoves:landscapist-placeholder:2.3.6")
     // https://google.github.io/accompanist/
     // https://github.com/google/accompanist
     val accompanistVersion = "0.34.0"

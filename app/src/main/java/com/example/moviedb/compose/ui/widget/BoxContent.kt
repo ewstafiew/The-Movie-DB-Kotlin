@@ -94,6 +94,7 @@ fun ErrorDialog(errorEvent: ErrorEvent, onClick: () -> Unit) {
                 },
             )
         }
+
         ErrorType.TIMEOUT -> {
             AlertDialog(
                 onDismissRequest = {
@@ -111,6 +112,7 @@ fun ErrorDialog(errorEvent: ErrorEvent, onClick: () -> Unit) {
                 },
             )
         }
+
         ErrorType.HTTP_UNAUTHORIZED -> {
             AlertDialog(
                 onDismissRequest = {
@@ -128,6 +130,7 @@ fun ErrorDialog(errorEvent: ErrorEvent, onClick: () -> Unit) {
                 },
             )
         }
+
         ErrorType.FORCE_UPDATE -> {
             AlertDialog(
                 onDismissRequest = {
@@ -145,6 +148,7 @@ fun ErrorDialog(errorEvent: ErrorEvent, onClick: () -> Unit) {
                 },
             )
         }
+
         ErrorType.UNKNOWN -> {
             AlertDialog(
                 onDismissRequest = {
