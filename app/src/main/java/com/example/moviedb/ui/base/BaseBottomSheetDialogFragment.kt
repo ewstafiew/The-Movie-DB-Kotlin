@@ -1,5 +1,6 @@
 package com.example.moviedb.ui.base
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -154,8 +155,8 @@ abstract class BaseBottomSheetDialogFragment<ViewBinding : ViewDataBinding, View
      * fragment transaction
      */
 
-    fun findFragment(TAG: String): Fragment? {
-        return activity?.supportFragmentManager?.findFragmentByTag(TAG)
+    fun findFragment(tag: String): Fragment? {
+        return activity?.supportFragmentManager?.findFragmentByTag(tag)
     }
 
     fun findChildFragment(parentFragment: Fragment = this, TAG: String): Fragment? {
@@ -163,11 +164,11 @@ abstract class BaseBottomSheetDialogFragment<ViewBinding : ViewDataBinding, View
     }
 
     fun addFragment(
-        fragment: Fragment, TAG: String?, addToBackStack: Boolean = false,
+        fragment: Fragment, tag: String?, addToBackStack: Boolean = false,
         transit: Int = -1
     ) {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.add(R.id.container, fragment, TAG)
+            ?.add(R.id.container, fragment, tag)
             ?.apply {
                 commitTransaction(this, addToBackStack, transit)
             }
@@ -204,6 +205,7 @@ abstract class BaseBottomSheetDialogFragment<ViewBinding : ViewDataBinding, View
         commitTransaction(transaction, addToBackStack, transit)
     }
 
+    @SuppressLint("WrongConstant")
     fun showDialogFragment(
         dialogFragment: DialogFragment, TAG: String?,
         addToBackStack: Boolean = false, transit: Int = -1
@@ -216,6 +218,7 @@ abstract class BaseBottomSheetDialogFragment<ViewBinding : ViewDataBinding, View
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun commitTransaction(
         transaction: FragmentTransaction, addToBackStack: Boolean = false,
         transit: Int = -1

@@ -9,44 +9,41 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.moviedb.compose.ui.detail.DetailScreen
 import com.example.moviedb.compose.ui.home.HomeScreen
-import okio.Path.Companion.toPath
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Route.MAIN) {
-        composable(route = Route.MAIN) {
+    NavHost(navController = navController, startDestination = Screen.Main.route) {
+        composable(route = Screen.Main.route) {
             HomeScreen(navController = navController)
         }
         composable(
-            route = Route.MOVIE_DETAIL,
-            arguments = listOf(navArgument(Route.Param.MOVIE_ID) {
+            route = Screen.MovieDetail.route,
+            arguments = listOf(navArgument(Screen.MovieDetail.Args.MOVIE_ID) {
                 type = NavType.Companion.StringType
             })
         ) { backStackEntry ->
             DetailScreen(
                 navController = navController,
-                movieId = backStackEntry.arguments?.getString(Route.Param.MOVIE_ID)
+                movieId = backStackEntry.arguments?.getString(Screen.MovieDetail.Args.MOVIE_ID)
             )
         }
     }
 }
 
-object Route {
-    const val MAIN = "main"
-    const val MOVIE_DETAIL = "movieDetail/{${Param.MOVIE_ID}}"
-
-    object Param {
-        const val MOVIE_ID = "movieId"
-
-        fun toPath(param: String) = "{${param}}"
+sealed class Screen(val route: String) {
+    data object Main : Screen("main")
+    data object MovieDetail : Screen("movieDetail/{${Args.MOVIE_ID}}") {
+        object Args {
+            const val MOVIE_ID = "movieId"
+        }
     }
 }
 
 fun NavController.toMovieDetail(movieId: String?) {
     navigate(
-        route = Route.MOVIE_DETAIL.replace(
-            Route.Param.toPath(Route.Param.MOVIE_ID),
+        Screen.MovieDetail.route.replace(
+            "{${Screen.MovieDetail.Args.MOVIE_ID}}",
             movieId ?: ""
         )
     )

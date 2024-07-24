@@ -1,5 +1,6 @@
 package com.example.moviedb.ui.base
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -154,31 +155,31 @@ abstract class BaseFragment<ViewBinding : ViewDataBinding, ViewModel : BaseViewM
      * fragment transaction
      */
 
-    fun findFragment(TAG: String): Fragment? {
-        return activity?.supportFragmentManager?.findFragmentByTag(TAG)
+    fun findFragment(tag: String): Fragment? {
+        return activity?.supportFragmentManager?.findFragmentByTag(tag)
     }
 
-    fun findChildFragment(parentFragment: Fragment = this, TAG: String): Fragment? {
-        return parentFragment.childFragmentManager.findFragmentByTag(TAG)
+    fun findChildFragment(parentFragment: Fragment = this, tag: String): Fragment? {
+        return parentFragment.childFragmentManager.findFragmentByTag(tag)
     }
 
     fun addFragment(
-        fragment: Fragment, TAG: String?, addToBackStack: Boolean = false,
+        fragment: Fragment, tag: String?, addToBackStack: Boolean = false,
         transit: Int = -1
     ) {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.add(R.id.container, fragment, TAG)
+            ?.add(R.id.container, fragment, tag)
             ?.apply {
                 commitTransaction(this, addToBackStack, transit)
             }
     }
 
     fun replaceFragment(
-        fragment: Fragment, TAG: String?, addToBackStack: Boolean = false,
+        fragment: Fragment, tag: String?, addToBackStack: Boolean = false,
         transit: Int = -1
     ) {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.container, fragment, TAG)
+            ?.replace(R.id.container, fragment, tag)
             ?.apply {
                 commitTransaction(this, addToBackStack, transit)
             }
@@ -186,36 +187,38 @@ abstract class BaseFragment<ViewBinding : ViewDataBinding, ViewModel : BaseViewM
 
     fun replaceChildFragment(
         parentFragment: Fragment = this, containerViewId: Int,
-        fragment: Fragment, TAG: String?, addToBackStack: Boolean = false, transit: Int = -1
+        fragment: Fragment, tag: String?, addToBackStack: Boolean = false, transit: Int = -1
     ) {
         val transaction = parentFragment.childFragmentManager.beginTransaction().replace(
-            containerViewId, fragment, TAG
+            containerViewId, fragment, tag
         )
         commitTransaction(transaction, addToBackStack, transit)
     }
 
     fun addChildFragment(
         parentFragment: Fragment = this, containerViewId: Int,
-        fragment: Fragment, TAG: String?, addToBackStack: Boolean = false, transit: Int = -1
+        fragment: Fragment, tag: String?, addToBackStack: Boolean = false, transit: Int = -1
     ) {
         val transaction = parentFragment.childFragmentManager.beginTransaction().add(
-            containerViewId, fragment, TAG
+            containerViewId, fragment, tag
         )
         commitTransaction(transaction, addToBackStack, transit)
     }
 
+    @SuppressLint("WrongConstant")
     fun showDialogFragment(
-        dialogFragment: DialogFragment, TAG: String?,
+        dialogFragment: DialogFragment, tag: String?,
         addToBackStack: Boolean = false, transit: Int = -1
     ) {
         val transaction = activity?.supportFragmentManager?.beginTransaction()
-        if (addToBackStack) transaction?.addToBackStack(TAG)
+        if (addToBackStack) transaction?.addToBackStack(tag)
         if (transit != -1) transaction?.setTransition(transit)
         if (transaction != null) {
-            dialogFragment.show(transaction, TAG)
+            dialogFragment.show(transaction, tag)
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun commitTransaction(
         transaction: FragmentTransaction, addToBackStack: Boolean = false,
         transit: Int = -1

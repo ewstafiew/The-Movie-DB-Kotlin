@@ -21,7 +21,7 @@ abstract class ItemsViewModel<Item> : BaseViewModel() {
     private var loadMoreTimeMillis = 0L
 
     // override if first page is not 1
-    protected open val firstPage = Constants.DEFAULT_FIRST_PAGE
+    private val firstPage = Constants.DEFAULT_FIRST_PAGE
     private val preFirstPage = firstPage - 1
 
     // current page

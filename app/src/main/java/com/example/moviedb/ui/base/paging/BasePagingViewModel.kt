@@ -66,6 +66,7 @@ abstract class BasePagingViewModel<Item : Any> : BaseViewModel() {
                     || combinedLoadStates.prepend is LoadState.Error -> {
                 hideLoadRefresh()
                 isEmptyList.value = itemCount == 0
+                @Suppress("KotlinConstantConditions")
                 val error = when {
                     combinedLoadStates.refresh is LoadState.Error -> combinedLoadStates.refresh as LoadState.Error
                     combinedLoadStates.append is LoadState.Error -> combinedLoadStates.append as LoadState.Error

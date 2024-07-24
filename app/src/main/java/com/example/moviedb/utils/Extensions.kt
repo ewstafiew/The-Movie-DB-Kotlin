@@ -1,5 +1,5 @@
 package com.example.moviedb.utils
-
+/*
 import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Resources
@@ -70,8 +70,6 @@ fun AssetManager.getJsonStringFromFile(fileName: String): String? {
         null
     }
 }
-
-/*
 
 /**
  * Extension method to remove the required boilerplate for running code after a view has been

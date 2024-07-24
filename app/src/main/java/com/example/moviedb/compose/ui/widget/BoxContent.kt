@@ -43,7 +43,7 @@ fun BoxContent(
 
     val refreshState = rememberPullRefreshState(
         refreshing = refreshing,
-        onRefresh = { viewModel.doRefresh() }
+        onRefresh = viewModel::doRefresh
     )
     Box(
         contentAlignment = Alignment.Center,

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 /**
  * should use paging 3
  */
-abstract class BaseLoadMoreRefreshViewModel<Item>() : BaseViewModel() {
+abstract class BaseLoadMoreRefreshViewModel<Item> : BaseViewModel() {
 
     // refresh flag
     val isRefreshing = MutableStateFlow(false)
@@ -26,7 +26,7 @@ abstract class BaseLoadMoreRefreshViewModel<Item>() : BaseViewModel() {
     val itemList = MutableStateFlow(arrayListOf<Item>())
 
     // empty list flag
-    val isEmptyList = MutableStateFlow(false)
+    private val isEmptyList = MutableStateFlow(false)
 
     /**
      * load data
@@ -74,7 +74,7 @@ abstract class BaseLoadMoreRefreshViewModel<Item>() : BaseViewModel() {
         }
     }
 
-    fun doLoadMore() {
+    private fun doLoadMore() {
         when {
             isLoading()
                     || isRefreshing.value

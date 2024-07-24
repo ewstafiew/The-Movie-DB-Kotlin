@@ -1,7 +1,6 @@
 package com.example.moviedb.ui.screen.image
 
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -33,10 +32,8 @@ class ImageFragment : BaseFragment<FragmentImageBinding, BaseViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            sharedElementEnterTransition =
-                TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
-        }
+        sharedElementEnterTransition =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
 
         viewBinding.imageRequestListener = object : RequestListener<Drawable> {
             override fun onLoadFailed(

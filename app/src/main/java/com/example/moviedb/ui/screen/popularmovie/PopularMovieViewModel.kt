@@ -14,7 +14,7 @@ import javax.inject.Inject
 class PopularMovieViewModel @Inject constructor(
 ) : ItemsViewModel<Movie>() {
 
-    val mode = MutableStateFlow(MovieListType.POPULAR.type)
+    private val mode = MutableStateFlow(MovieListType.POPULAR.type)
 
     override fun loadData(page: Int) {
         val hashMap = HashMap<String, String>()

@@ -11,12 +11,12 @@ plugins {
     id("kotlin-android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
-    id("kotlin-kapt")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("dagger.hilt.android.plugin")
     jacoco
+    id("kotlin-kapt") // for data binding
 }
 
 android {
@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId = appId
         buildToolsVersion = "35.0.0"
-        minSdk = 23
+        minSdk = 24
         compileSdk = 35
         targetSdk = 35
         multiDexEnabled = true
@@ -204,7 +204,7 @@ dependencies {
 
     // OkHttpProfiler
     // https://github.com/itkacher/OkHttpProfiler
-    implementation("com.localebro:okhttpprofiler:1.0.8")
+//    implementation("com.localebro:okhttpprofiler:1.0.8")
 
     // stetho
     // http://facebook.github.io/stetho/
@@ -228,7 +228,7 @@ dependencies {
 
     // firebase
     // https://firebase.google.com/docs/android/setup
-    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
@@ -248,125 +248,122 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.12.0")
 //    testImplementation("org.mockito:mockito-inline:3.3.3")
-    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
 //    testImplementation("org.robolectric:robolectric:4.3")
 
-    /**
-     * for buildSrc
-     */
     /*
-        // common
-        implementation(Libs.appcompat)
-        implementation(Libs.legacySupport)
-        implementation(Libs.constraintLayout)
-        implementation(Libs.recyclerview)
-        implementation(Libs.material)
-        implementation(Libs.stdLib)
-        implementation(Libs.multidex)
+    // common
+    implementation(Libs.appcompat)
+    implementation(Libs.legacySupport)
+    implementation(Libs.constraintLayout)
+    implementation(Libs.recyclerview)
+    implementation(Libs.material)
+    implementation(Libs.stdLib)
+    implementation(Libs.multidex)
 
-        // List of KTX extensions
-        // https://developer.android.com/kotlin/ktx/extensions-list
-        implementation(Libs.coreKtx)
-        implementation(Libs.activityKtx)
-        implementation(Libs.fragmentKtx)
+    // List of KTX extensions
+    // https://developer.android.com/kotlin/ktx/extensions-list
+    implementation(Libs.coreKtx)
+    implementation(Libs.activityKtx)
+    implementation(Libs.fragmentKtx)
 
-        // Lifecycle
-        // https://developer.android.com/jetpack/androidx/releases/lifecycle
-        implementation(Libs.lifecycleViewModelKtx)
-        implementation(Libs.lifecycleLiveDataKtx)
-        implementation(Libs.lifecycleKtx)
-        implementation(Libs.lifecycleJava8)
+    // Lifecycle
+    // https://developer.android.com/jetpack/androidx/releases/lifecycle
+    implementation(Libs.lifecycleViewModelKtx)
+    implementation(Libs.lifecycleLiveDataKtx)
+    implementation(Libs.lifecycleKtx)
+    implementation(Libs.lifecycleJava8)
 
-        // room
-        // https://developer.android.com/topic/libraries/architecture/room
-        implementation(Libs.roomRuntime)
-        kapt(Libs.roomCompiler)
-        implementation(Libs.roomKtx)
+    // room
+    // https://developer.android.com/topic/libraries/architecture/room
+    implementation(Libs.roomRuntime)
+    kapt(Libs.roomCompiler)
+    implementation(Libs.roomKtx)
 
-        // paging
-        // https://developer.android.com/topic/libraries/architecture/paging
-        implementation(Libs.paging)
+    // paging
+    // https://developer.android.com/topic/libraries/architecture/paging
+    implementation(Libs.paging)
 
-        // navigation
-        // https://developer.android.com/jetpack/androidx/releases/navigation
-        implementation(Libs.navigationRuntimeKtx)
-        implementation(Libs.navigationFragmentKtx)
-        implementation(Libs.navigationUiKtx)
+    // navigation
+    // https://developer.android.com/jetpack/androidx/releases/navigation
+    implementation(Libs.navigationRuntimeKtx)
+    implementation(Libs.navigationFragmentKtx)
+    implementation(Libs.navigationUiKtx)
     //    implementation(Libs.navigationDynamicModule)
 
-        // work
-        // https://developer.android.com/topic/libraries/architecture/workmanager
+    // work
+    // https://developer.android.com/topic/libraries/architecture/workmanager
     //    implementation(Libs.workManager)
 
-        // rx
-        // https://github.com/ReactiveX/RxJava
+    // rx
+    // https://github.com/ReactiveX/RxJava
     //    implementation(Libs.rxjava)
 
-        // coroutines
-        // https://github.com/Kotlin/kotlinx.coroutines
-        implementation(Libs.coroutinesCore)
-        implementation(Libs.coroutinesAndroid)
-        testImplementation(Libs.coroutinesTest)
+    // coroutines
+    // https://github.com/Kotlin/kotlinx.coroutines
+    implementation(Libs.coroutinesCore)
+    implementation(Libs.coroutinesAndroid)
+    testImplementation(Libs.coroutinesTest)
 
-        // moshi
-        implementation(Libs.moshi)
-        kapt(Libs.moshiCodeGen)
+    // moshi
+    implementation(Libs.moshi)
+    kapt(Libs.moshiCodeGen)
 
-        // retrofit
-        // https://github.com/square/retrofit
-        implementation(Libs.retrofit)
-        implementation(Libs.retrofitMoshi)
-        implementation(Libs.okLogging)
+    // retrofit
+    // https://github.com/square/retrofit
+    implementation(Libs.retrofit)
+    implementation(Libs.retrofitMoshi)
+    implementation(Libs.okLogging)
     //    implementation(Libs.retrofitRxjava)
 
-        // stetho
-        // http://facebook.github.io/stetho/
-        implementation(Libs.stetho)
-        implementation(Libs.stethoOkhttp3)
+    // stetho
+    // http://facebook.github.io/stetho/
+    implementation(Libs.stetho)
+    implementation(Libs.stethoOkhttp3)
 
-        // glide
-        // https://github.com/bumptech/glide
-        implementation(Libs.glideRuntime)
-        kapt(Libs.glideCompiler)
+    // glide
+    // https://github.com/bumptech/glide
+    implementation(Libs.glideRuntime)
+    kapt(Libs.glideCompiler)
 
-        //dagger hilt
-        implementation(Libs.daggerHiltAndroid)
-        kapt(Libs.daggerHiltAndroidCompiler)
-        implementation(Libs.daggerHiltViewModel)
-        kapt(Libs.daggerHiltViewModelCompiler)
+    //dagger hilt
+    implementation(Libs.daggerHiltAndroid)
+    kapt(Libs.daggerHiltAndroidCompiler)
+    implementation(Libs.daggerHiltViewModel)
+    kapt(Libs.daggerHiltViewModelCompiler)
 
-        // runtime permission
-        // https://github.com/googlesamples/easypermissions
+    // runtime permission
+    // https://github.com/googlesamples/easypermissions
     //    implementation(Libs.easyPermissions)
 
-        // firebase
-        // https://firebase.google.com/docs/android/setup
-        implementation(Libs.firebaseAnalytics)
-        implementation(Libs.firebaseCrashlytics)
+    // firebase
+    // https://firebase.google.com/docs/android/setup
+    implementation(Libs.firebaseAnalytics)
+    implementation(Libs.firebaseCrashlytics)
 
-        // lottie
-        // https://github.com/airbnb/lottie-android
+    // lottie
+    // https://github.com/airbnb/lottie-android
     //    implementation(Libs.lottie)
 
-        // timber
-        // https://github.com/JakeWharton/timber
-        implementation(Libs.timber)
+    // timber
+    // https://github.com/JakeWharton/timber
+    implementation(Libs.timber)
 
-        implementation(Libs.viewpager2)
+    implementation(Libs.viewpager2)
 
-        compileOnly(Libs.lombok)
-        annotationProcessor(Libs.annotationLombok)
+    compileOnly(Libs.lombok)
+    annotationProcessor(Libs.annotationLombok)
 
-        // unit test
-        testImplementation(Libs.junit)
-        testImplementation(Libs.mockitoCore)
-        androidTestImplementation(Libs.mockitoAndroid)
-        testImplementation(Libs.testCore)
-        testImplementation(Libs.archCore)
-        */
+    // unit test
+    testImplementation(Libs.junit)
+    testImplementation(Libs.mockitoCore)
+    androidTestImplementation(Libs.mockitoAndroid)
+    testImplementation(Libs.testCore)
+    testImplementation(Libs.archCore)
+    */
 
     // compose
     // https://developer.android.com/jetpack/compose/interop/adding
@@ -520,10 +517,10 @@ project.afterEvaluate {
                 )
                 //Explain to Jacoco where are you .class file java and kotlin
                 classDirectories.setFrom(
-                    fileTree("${project.buildDir}/intermediates/classes/${sourcePath}").exclude(
+                    fileTree("${project.layout.buildDirectory}/intermediates/classes/${sourcePath}").exclude(
                         excludeFiles
                     ),
-                    fileTree("${project.buildDir}/tmp/kotlin-classes/${sourceName}").exclude(
+                    fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/${sourceName}").exclude(
                         excludeFiles
                     )
                 )
@@ -536,7 +533,7 @@ project.afterEvaluate {
                 //Explain to Jacoco where is your source code
                 sourceDirectories.setFrom(files(coverageSourceDirs))
                 //execute file .exec to generate data report
-                executionData.setFrom(files("${project.buildDir}/jacoco/${testTaskName}.exec"))
+                executionData.setFrom(files("${project.layout.buildDirectory}/jacoco/${testTaskName}.exec"))
                 reports {
                     xml.required.set(true)
                     html.required.set(true)

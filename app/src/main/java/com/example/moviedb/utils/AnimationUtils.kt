@@ -1,5 +1,6 @@
 package com.example.moviedb.utils
 
+/*
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -35,4 +36,4 @@ fun Context.startAnimatorSet(
         setTarget(targetView)
         start()
     }
-}
+}*/

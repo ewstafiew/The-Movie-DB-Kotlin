@@ -1,5 +1,6 @@
 package com.example.moviedb.utils
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -17,7 +18,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import com.example.moviedb.BuildConfig
 import com.example.moviedb.data.constant.Constants
 
 @BindingAdapter("enableRefresh")
@@ -40,24 +40,25 @@ fun ImageView.loadLocalImage(uri: Uri?) {
     Glide.with(context).load(uri).into(this)
 }
 
-@BindingAdapter(value = ["loadImageLocal"])
+/*@BindingAdapter(value = ["loadImageLocal"])
 fun ImageView.loadLocalImage(imageName: String?) {
     if (imageName.isNullOrBlank().not()) {
         Glide.with(context)
             .load(resources.getIdentifier(imageName, "drawable", BuildConfig.APPLICATION_ID))
             .into(this)
     }
-}
+}*/
 
 @BindingAdapter(value = ["isLoading"])
 fun ContentLoadingProgressBar.show(isLoading: Boolean?) {
     if (isLoading == true) show() else hide()
 }
 
+@SuppressLint("CheckResult")
 @BindingAdapter(
     value = [
         "imageUrl",
-        "thumbnailUrl",
+//        "thumbnailUrl",
         "placeholder",
         "errorDrawable",
         "requestListener",
@@ -72,7 +73,7 @@ fun ContentLoadingProgressBar.show(isLoading: Boolean?) {
 )
 fun ImageView.loadImage(
     imageUrl: String? = null,
-    thumbnailUrl: String? = null,
+//    thumbnailUrl: String? = null,
     placeHolderDrawable: Drawable? = null,
     errorDrawable: Drawable? = null,
     requestListener: RequestListener<Drawable>? = null,

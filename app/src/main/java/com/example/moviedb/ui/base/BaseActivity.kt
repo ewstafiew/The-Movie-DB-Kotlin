@@ -60,7 +60,7 @@ abstract class BaseActivity<ViewBinding : ViewDataBinding, ViewModel : BaseViewM
         else dismissLLoadingDialog()
     }
 
-    protected fun handleError(errorType: ErrorType?) {
+    private fun handleError(errorType: ErrorType?) {
         when (errorType) {
             ErrorType.NoInternetConnection -> {
                 handleErrorMessage(getString(R.string.no_internet_connection))
@@ -182,10 +182,10 @@ abstract class BaseActivity<ViewBinding : ViewDataBinding, ViewModel : BaseViewM
             MaterialAlertDialogBuilder(this).apply {
                 setTitle(title)
                 setMessage(message)
-                setPositiveButton(firstText) { dialog, which ->
+                setPositiveButton(firstText) { _, _ ->
                     firstListener?.invoke()
                 }
-                setNegativeButton(secondText) { dialog, which ->
+                setNegativeButton(secondText) { _, _ ->
                     secondListener?.invoke()
                 }
                 setCancelable(cancelable)

@@ -41,8 +41,8 @@ class OldMainFragment : BaseFragment<FragmentOldMainBinding, OldMainViewModel>()
         onClickBottomNavigationItem(Tab.POPULAR.position)
     }
 
-    private fun onClickBottomNavigationItem(position: Int): Boolean {
-        val currentTag = getTabFragmentTag(viewModel.currentTab.value ?: Tab.POPULAR.position)
+    private fun onClickBottomNavigationItem(position: Int) {
+        val currentTag = getTabFragmentTag(viewModel.currentTab.value)
         val newTag = getTabFragmentTag(position)
 
         val fragmentManager = childFragmentManager
@@ -67,8 +67,6 @@ class OldMainFragment : BaseFragment<FragmentOldMainBinding, OldMainViewModel>()
 
         viewModel.currentTab.value = position
         fragmentTransaction.commit()
-
-        return true
     }
 
     private fun getTabFragmentTag(position: Int) = FRAGMENT_TAG + position

@@ -24,9 +24,8 @@ class MoviePagerFragment :
     BaseLoadMoreRefreshFragment<FragmentMoviePagerBinding, MoviePagerViewModel, Movie>() {
 
     companion object {
-        const val TAG = "MoviePagerFragment"
         const val TYPE = "TYPE"
-        const val POSITION = "POSITION"
+        private const val POSITION = "POSITION"
         private const val MAX_SCALE = 1f
         private const val SCALE_PERCENT = 0.8f
         private const val MIN_SCALE = SCALE_PERCENT * MAX_SCALE
@@ -99,5 +98,6 @@ class MoviePagerFragment :
     }
 
     private fun toMovieDetail(movie: Movie) {
+        movie.id
     }
 }

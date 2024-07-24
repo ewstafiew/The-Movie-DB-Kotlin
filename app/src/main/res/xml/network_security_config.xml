@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+doc https://developer.android.com/privacy-and-security/security-config
+network_security_config.xml có 2 file
+1. cho server production, base-config không có <certificates src="user" />
+2. cho server khác, base-config có <certificates src="user" />
+-->
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates
+                src="user"
+                tools:ignore="AcceptsUserCertificates" />
+        </trust-anchors>
+    </base-config>
+
+    <debug-overrides>
+        <trust-anchors>
+            <!-- Trust user added CAs while debuggable only -->
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

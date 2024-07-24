@@ -1,6 +1,5 @@
 package com.example.moviedb.utils
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -8,7 +7,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -128,13 +126,6 @@ fun Context.isFirstTimeAskingPermissions(permissions: Array<String>): Boolean {
 }
 
 /**
- * Check if version is marshmallow and above. deciding to request runtime permission
- */
-fun shouldRequestRuntimePermission(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-}
-
-/**
  * check grandResults are granted
  */
 fun isGrantedGrantResults(grantResults: IntArray): Boolean {
@@ -151,13 +142,11 @@ fun isGrantedGrantResults(grantResults: IntArray): Boolean {
  * check if multiple permissions are granted or not
  */
 fun Context.shouldAskPermissions(permissions: Array<String>): Boolean {
-    if (shouldRequestRuntimePermission()) {
-        for (permission in permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                return true
-            }
+    for (permission in permissions) {
+        if (ContextCompat.checkSelfPermission(this, permission)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
         }
     }
     return false
@@ -166,7 +155,6 @@ fun Context.shouldAskPermissions(permissions: Array<String>): Boolean {
 /**
  * check if should show request permissions rationale in activity
  */
-@TargetApi(Build.VERSION_CODES.M)
 fun <T : Activity> T.shouldShowRequestPermissionsRationale(permissions: Array<out String>): Boolean {
     for (permission in permissions) {
         if (shouldShowRequestPermissionRationale(permission)) {
@@ -191,7 +179,6 @@ fun <T : Fragment> T.shouldShowRequestPermissionsRationale(permissions: Array<ou
 /**
  * request permissions in activity
  */
-@TargetApi(Build.VERSION_CODES.M)
 fun <T : Activity> T.requestPermissions(
     permissions: Array<String>,
     permissionRequestCode: Int,
@@ -239,6 +226,7 @@ fun <T : Fragment> T.requestPermissions(
         // permissions denied previously
         if (shouldShowRequestPermissionsRationale(permissions)) {
             requestPermissionListener.onPermissionRationaleShouldBeShown {
+                @Suppress("DEPRECATION")
                 requestPermissions(permissions, permissionRequestCode)
             }
         } else {
@@ -246,6 +234,7 @@ fun <T : Fragment> T.requestPermissions(
             if (context.isFirstTimeAskingPermissions(permissions)) {
                 context.firstTimeAskingPermissions(permissions, false)
                 // request permissions
+                @Suppress("DEPRECATION")
                 requestPermissions(permissions, permissionRequestCode)
             } else {
                 // permission disabled

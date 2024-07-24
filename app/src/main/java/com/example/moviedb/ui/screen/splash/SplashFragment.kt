@@ -46,6 +46,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding, BaseViewModel>() {
     }
 
     private fun navigateToHome() {
+        @Suppress("KotlinConstantConditions")
         getNavController()?.navigate(
             when (2) {
                 0 -> SplashFragmentDirections.toMovieListPager()

@@ -25,7 +25,7 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    private val TIMEOUT = 10L
+    private val timeout = 10L
 
     @Singleton
     @Provides
@@ -72,9 +72,9 @@ class NetworkModule {
         @Named("mock") mockInterceptor: MockInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
-            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(timeout, TimeUnit.SECONDS)
+            .readTimeout(timeout, TimeUnit.SECONDS)
+            .writeTimeout(timeout, TimeUnit.SECONDS)
             .apply {
                 addInterceptor(logging)
 //                if (BuildConfig.DEBUG) addInterceptor(OkHttpProfilerInterceptor())

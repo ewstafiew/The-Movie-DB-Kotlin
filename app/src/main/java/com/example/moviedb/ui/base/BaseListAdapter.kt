@@ -37,7 +37,7 @@ private interface BaseRecyclerAdapter<Item : Any, ViewBinding : ViewDataBinding>
 abstract class BaseListAdapter<Item : Any, ViewBinding : ViewDataBinding>(
     callBack: DiffUtil.ItemCallback<Item>
 ) : ListAdapter<Item, BaseViewHolder<ViewBinding>>(
-    AsyncDifferConfig.Builder<Item>(callBack)
+    AsyncDifferConfig.Builder(callBack)
         .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
         .build()
 ), BaseRecyclerAdapter<Item, ViewBinding> {

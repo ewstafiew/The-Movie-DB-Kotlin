@@ -13,9 +13,9 @@ class MainApplication : Application() {
         if (isDevMode()) {
             // init timber
             Timber.plant(Timber.DebugTree())
-        } else {
         }
     }
 }
 
+@Suppress("KotlinConstantConditions")
 fun isDevMode() = BuildConfig.BUILD_TYPE != "release"

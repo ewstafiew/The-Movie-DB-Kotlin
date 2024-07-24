@@ -3,11 +3,15 @@ package com.example.moviedb.compose.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
@@ -16,7 +20,12 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,13 +50,16 @@ fun HomeScreen(
     navController: NavController,
     viewModel: PopularMovieViewModel = hiltViewModel()
 ) {
-    val itemListUiState by viewModel.itemsUiState.collectAsState()
-    val pullRefreshState =
-        rememberPullRefreshState(itemListUiState.isRefreshing, { viewModel.doRefresh() })
-    val scrollState = rememberLazyGridState()
+    val uiState by viewModel.itemsUiState.collectAsState()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = uiState.isRefreshing,
+        onRefresh = viewModel::doRefresh
+    )
+    val gridState = rememberLazyGridState()
+    // Trigger initial data load
     val endOfListReached by remember {
         derivedStateOf {
-            scrollState.isScrolledToEnd()
+            gridState.isScrolledToEnd()
         }
     }
     LaunchedEffect(key1 = true, block = {
@@ -63,24 +75,21 @@ fun HomeScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.fillMaxSize(),
-            state = scrollState,
+            state = gridState
         ) {
             items(
-                items = itemListUiState.items,
-                key = { movie: Movie -> movie.id },
-                itemContent = { movie ->
-                    ItemMovie(
-                        movie = movie,
-                        onClick = {
-                            navController.toMovieDetail(movieId = it.id)
-                        },
-                    )
-                }
-            )
+                items = uiState.items,
+                key = { movie: Movie -> movie.id }
+            ) { movie ->
+                MovieItem(
+                    movie = movie,
+                    onClick = { navController.toMovieDetail(movieId = it.id) }
+                )
+            }
         }
 
         PullRefreshIndicator(
-            refreshing = itemListUiState.isRefreshing,
+            refreshing = uiState.isRefreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
@@ -95,14 +104,14 @@ fun LazyGridState.isScrolledToEnd() =
     layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 5
 
 @Composable
-fun ItemMovie(movie: Movie, onClick: (Movie) -> Unit) {
+fun MovieItem(
+    movie: Movie, onClick: (Movie) -> Unit
+) {
     Box(
         modifier = Modifier
-            .clickable {
-                onClick.invoke(movie)
-            }
-            .height(100.dp)
             .fillMaxWidth()
+            .aspectRatio(9f / 16f)
+            .clickable { onClick.invoke(movie) }
     ) {
         GlideImage(
             imageModel = { movie.getFullPosterPath() ?: "" },
@@ -111,9 +120,7 @@ fun ItemMovie(movie: Movie, onClick: (Movie) -> Unit) {
                 +PlaceholderPlugin.Loading(Icons.Filled.Image)
                 +PlaceholderPlugin.Failure(Icons.Filled.Error)
             },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-            ),
+            imageOptions = ImageOptions(contentScale = ContentScale.Crop)
         )
 
         Box(

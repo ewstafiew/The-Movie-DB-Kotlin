@@ -16,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class PermissionFragment : BaseFragment<FragmentPermisisonBinding, BaseViewModel>() {
 
     companion object {
-        const val TAG = "PermissionFragment"
         fun newInstance() = PermissionFragment()
     }
 
@@ -118,6 +117,7 @@ class PermissionFragment : BaseFragment<FragmentPermisisonBinding, BaseViewModel
         requestCode: Int, permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        @Suppress("DEPRECATION")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // single permission

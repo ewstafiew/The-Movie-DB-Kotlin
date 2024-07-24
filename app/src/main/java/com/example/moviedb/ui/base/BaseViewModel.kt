@@ -26,7 +26,7 @@ open class BaseViewModel : ViewModel() {
 
     // exception handler for coroutine
     private val exceptionHandler by lazy {
-        CoroutineExceptionHandler { context, throwable ->
+        CoroutineExceptionHandler { _, throwable ->
             viewModelScope.launch {
                 onError(throwable)
             }
