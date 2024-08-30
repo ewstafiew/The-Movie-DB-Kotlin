@@ -22,13 +22,6 @@ abstract class ItemsViewModel<Item> : BaseViewModel() {
 
     // override if first page is not 1
     private val firstPage = Constants.DEFAULT_FIRST_PAGE
-    private val preFirstPage = firstPage - 1
-
-    // current page
-    private var currentPage: Int = preFirstPage
-
-    // last page flag
-    private var isLastPage: Boolean = false
 
     // empty list flag
     private val isEmptyList = MutableStateFlow(false)
@@ -37,7 +30,16 @@ abstract class ItemsViewModel<Item> : BaseViewModel() {
     protected open val loadMoreThreshold = Constants.DEFAULT_NUM_VISIBLE_THRESHOLD
 
     // override if need change number item per page
-    protected open val numberItemPerPage = Constants.DEFAULT_ITEM_PER_PAGE
+    protected open val pageSize = Constants.DEFAULT_PAGE_SIZE
+
+    private fun getCurrentPage(): Int {
+        val itemSize = _itemsUiState.value.items.size
+        return itemSize / pageSize + if (itemSize % pageSize == 0) 0 else 1
+    }
+
+    private fun isLastPage(): Boolean {
+        return _itemsUiState.value.items.size % pageSize != 0
+    }
 
     /**
      * load data
@@ -48,13 +50,13 @@ abstract class ItemsViewModel<Item> : BaseViewModel() {
      * first load
      */
     fun firstLoad() {
-        if (currentPage == preFirstPage
+        if (getCurrentPage() == firstPage - 1
             && _itemsUiState.value.items.isEmpty()
         ) {
             _itemsUiState.update {
                 it.copy(isLoading = true)
             }
-            loadData(firstPage)
+            loadData(page = firstPage)
         }
     }
 
@@ -68,64 +70,48 @@ abstract class ItemsViewModel<Item> : BaseViewModel() {
                 _itemsUiState.update {
                     it.copy(isRefreshing = true)
                 }
-                refreshData()
+                loadData(page = firstPage)
             }
         }
     }
 
-    /**
-     * load first page
-     */
-    private fun refreshData() {
-        loadData(firstPage)
-    }
-
-    fun onBind(position: Int) {
+    fun checkLoadMore(position: Int) {
 //        Timber.v("Check load more on $position")
         if (_itemsUiState.value.items.size - position <= loadMoreThreshold) {
-            doLoadMore()
+            when {
+                _itemsUiState.value.isLoading
+                        || _itemsUiState.value.isRefreshing
+                        || _itemsUiState.value.isLoadMore
+                        || isLastPage()
+                        || System.currentTimeMillis() - loadMoreTimeMillis < 2000 -> {
+                }
+
+                else -> {
+                    _itemsUiState.update {
+                        it.copy(isLoadMore = true)
+                    }
+                    loadMoreTimeMillis = System.currentTimeMillis()
+                    doLoadMore()
+                }
+            }
         }
     }
 
     fun doLoadMore() {
-        when {
-            _itemsUiState.value.isLoading
-                    || _itemsUiState.value.isRefreshing
-                    || _itemsUiState.value.isLoadMore
-                    || isLastPage
-                    || System.currentTimeMillis() - loadMoreTimeMillis < 2000 -> {
-            }
-
-            else -> {
-                _itemsUiState.update {
-                    it.copy(isLoadMore = true)
-                }
-                loadMoreTimeMillis = System.currentTimeMillis()
-                loadMore()
-            }
-        }
-    }
-
-    /**
-     * load next page
-     */
-    private fun loadMore() {
-        loadData(currentPage + 1)
+        loadData(page = getCurrentPage() + 1)
     }
 
     /**
      * handle load success
      */
     fun onLoadSuccess(page: Int, items: List<Item>?) {
-        currentPage = page
-        isLastPage = (items?.size ?: 0) < numberItemPerPage
         _itemsUiState.update {
             it.copy(
                 isLoading = false,
                 isRefreshing = false,
                 isLoadMore = false,
                 items = arrayListOf<Item>().apply {
-                    if (currentPage != firstPage) {
+                    if (page != firstPage) {
                         addAll(_itemsUiState.value.items)
                     }
                     if (items?.isNotEmpty() == true) {

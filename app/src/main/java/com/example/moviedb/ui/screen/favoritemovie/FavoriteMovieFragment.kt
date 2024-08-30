@@ -43,10 +43,6 @@ class FavoriteMovieFragment :
         viewBinding.container.setBackgroundColor(Color.BLACK)
     }
 
-    fun loadData() {
-        viewModel.loadData(viewModel.getFirstPage())
-    }
-
     private fun toMovieDetail(movie: Movie) {
         getNavController()?.navigate(
             FavoriteMovieFragmentDirections.toGraphMovieDetail(movie)

@@ -16,12 +16,6 @@ abstract class BaseLoadMoreRefreshViewModel<Item> : BaseViewModel() {
     private val isLoadMore = MutableStateFlow(false)
     private var loadMoreTimeMillis = 0L
 
-    // current page
-    private val currentPage = MutableStateFlow(getPreFirstPage())
-
-    // last page flag
-    private val isLastPage = MutableStateFlow(false)
-
     // item list
     val itemList = MutableStateFlow(arrayListOf<Item>())
 
@@ -29,23 +23,41 @@ abstract class BaseLoadMoreRefreshViewModel<Item> : BaseViewModel() {
     private val isEmptyList = MutableStateFlow(false)
 
     /**
+     * override if first page is not 1
+     */
+    protected open val firstPage = Constants.DEFAULT_FIRST_PAGE
+
+    /**
+     * override if need change number visible threshold
+     */
+    protected open val loadMoreThreshold = Constants.DEFAULT_NUM_VISIBLE_THRESHOLD
+
+    /**
+     * override if need change number item per page
+     */
+    protected open val pageSize = Constants.DEFAULT_PAGE_SIZE
+
+    private fun getCurrentPage(): Int {
+        val itemSize = itemList.value.size
+        return itemSize / pageSize + if (itemSize % pageSize == 0) 0 else 1
+    }
+
+    private fun isLastPage(): Boolean {
+        return itemList.value.size % pageSize != 0
+    }
+
+    /**
      * load data
      */
     abstract fun loadData(page: Int)
 
     /**
-     * check first time load data
-     */
-    private fun isFirst() = currentPage.value == getPreFirstPage()
-            && itemList.value.isEmpty()
-
-    /**
      * first load
      */
     fun firstLoad() {
-        if (isFirst()) {
+        if (getCurrentPage() == firstPage - 1 && itemList.value.isEmpty()) {
             showLoading()
-            loadData(getFirstPage())
+            loadData(page = firstPage)
         }
     }
 
@@ -55,84 +67,37 @@ abstract class BaseLoadMoreRefreshViewModel<Item> : BaseViewModel() {
 
             else -> {
                 isRefreshing.value = true
-                refreshData()
+                loadData(page = firstPage)
             }
         }
     }
 
-    /**
-     * load first page
-     */
-    private fun refreshData() {
-        loadData(getFirstPage())
-    }
-
-    fun onBind(position: Int) {
+    fun checkLoadMore(position: Int) {
 //        Timber.v("Check load more on $position")
-        if (itemList.value.size - position < getLoadMoreThreshold()) {
-            doLoadMore()
-        }
-    }
+        if (itemList.value.size - position < loadMoreThreshold) {
+            when {
+                isLoading()
+                        || isRefreshing.value
+                        || isLoadMore.value
+                        || isLastPage()
+                        || System.currentTimeMillis() - loadMoreTimeMillis < 2_000 -> {
+                }
 
-    private fun doLoadMore() {
-        when {
-            isLoading()
-                    || isRefreshing.value
-                    || isLoadMore.value
-                    || isLastPage.value
-                    || System.currentTimeMillis() - loadMoreTimeMillis < 2000 -> {
-            }
-
-            else -> {
-                isLoadMore.value = true
-                loadMoreTimeMillis = System.currentTimeMillis()
-                loadMore()
+                else -> {
+                    isLoadMore.value = true
+                    loadMoreTimeMillis = System.currentTimeMillis()
+                    loadData(page = getCurrentPage() + 1)
+                }
             }
         }
-    }
-
-    /**
-     * load next page
-     */
-    private fun loadMore() {
-        loadData(currentPage.value.plus(1))
-    }
-
-    /**
-     * override if first page is not 1
-     */
-    open fun getFirstPage() = Constants.DEFAULT_FIRST_PAGE
-
-    private fun getPreFirstPage() = getFirstPage() - 1
-
-    /**
-     * override if need change number visible threshold
-     */
-    protected open fun getLoadMoreThreshold() = Constants.DEFAULT_NUM_VISIBLE_THRESHOLD
-
-    /**
-     * override if need change number item per page
-     */
-    protected open fun getNumberItemPerPage() = Constants.DEFAULT_ITEM_PER_PAGE
-
-    /**
-     * reset load more
-     */
-    private fun resetLoadMore() {
-        isLastPage.value = false
     }
 
     /**
      * handle load success
      */
     fun onLoadSuccess(page: Int, items: List<Item>?) {
-        // load success then update current page
-        currentPage.value = page
         // case load first page then clear data from listItem
-        if (currentPage.value == getFirstPage()) itemList.value.clear()
-        // case refresh then reset load more
-        if (isRefreshing.value) resetLoadMore()
-
+        if (page == firstPage) itemList.value.clear()
         // add new data to listItem
         if (items?.isNotEmpty() == true) {
             itemList.value = arrayListOf<Item>().apply {
@@ -140,10 +105,6 @@ abstract class BaseLoadMoreRefreshViewModel<Item> : BaseViewModel() {
                 addAll(items)
             }
         }
-
-        // check last page
-        isLastPage.value = (items?.size ?: 0) < getNumberItemPerPage()
-
         // reset load
         isRefreshing.value = false
         isLoadMore.value = false

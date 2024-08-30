@@ -27,7 +27,7 @@ abstract class BasePagingViewModel<Item : Any> : BaseViewModel() {
     val isEmptyList by lazy { MutableStateFlow(false) }
 
     // number item per page
-    protected open val pageSize by lazy { Constants.DEFAULT_ITEM_PER_PAGE }
+    protected open val pageSize by lazy { Constants.DEFAULT_PAGE_SIZE }
 
     protected open val pagingConfig: PagingConfig by lazy {
         PagingConfig(pageSize = pageSize)

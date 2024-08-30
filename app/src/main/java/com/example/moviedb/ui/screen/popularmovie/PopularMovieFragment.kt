@@ -23,8 +23,8 @@ class PopularMovieFragment :
     override val viewModel: PopularMovieViewModel by viewModels()
     override val listAdapter: BaseListAdapter<Movie, out ViewDataBinding> by lazy {
         PopularMovieAdapter(
-            itemClickListener = { toMovieDetail(it) },
-            onBindPosition = { viewModel.onBind(it) }
+            itemClickListener = { toMovieDetail(movie = it) },
+            onBindPosition = { viewModel.checkLoadMore(position = it) }
         )
     }
     override val swipeRefreshLayout: SwipeRefreshLayout

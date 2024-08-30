@@ -16,13 +16,11 @@ class FavoriteMovieViewModel @Inject constructor(
     override fun loadData(page: Int) {
         viewModelScope.launch {
             try {
-                onLoadSuccess(
-                    page = page,
-                    items = userRepository.getFavoriteLocal(
-                        pageSize = getNumberItemPerPage(),
-                        pageIndex = page
-                    )
+                val items = userRepository.getFavoriteLocal(
+                    pageSize = pageSize,
+                    pageIndex = page
                 )
+                onLoadSuccess(page = page, items = items)
             } catch (e: Exception) {
                 onError(e)
             }
