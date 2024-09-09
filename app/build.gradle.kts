@@ -145,22 +145,22 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.10")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.20")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.20")
     implementation("androidx.multidex:multidex:2.0.1")
 
     // List of KTX extensions
     // https://developer.android.com/kotlin/ktx/extensions-list
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.activity:activity-ktx:1.9.1")
-    implementation("androidx.fragment:fragment-ktx:1.8.2")
+    implementation("androidx.activity:activity-ktx:1.9.2")
+    implementation("androidx.fragment:fragment-ktx:1.8.3")
 
     // Lifecycle
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5")
 //    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.5")
 
     // Preferences DataStore
     // https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html
@@ -178,9 +178,9 @@ dependencies {
 
     // navigation
     // https://developer.android.com/jetpack/androidx/releases/navigation
-    implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.8.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.0")
 
     // coroutines
     // https://github.com/Kotlin/kotlinx.coroutines
@@ -242,19 +242,19 @@ dependencies {
 
     // unit test
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito:mockito-core:5.13.0")
 //    testImplementation("org.mockito:mockito-inline:3.3.3")
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.20")
 //    testImplementation("org.robolectric:robolectric:4.3")
 
     // compose
     // https://developer.android.com/jetpack/compose/interop/adding
     // https://developer.android.com/jetpack/compose/setup
 //    implementation("androidx.compose.compiler:compiler:1.4.5")
-    val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
+    val composeBom = platform("androidx.compose:compose-bom:2024.09.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
@@ -270,7 +270,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     // Animations
-    implementation("androidx.compose.animation:animation:1.6.8")
+    implementation("androidx.compose.animation:animation:1.7.0")
     // Constraint layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     // Optional - Included automatically by material, only add when you need
@@ -278,19 +278,19 @@ dependencies {
     // custom design system based on Foundation)
 //    implementation("androidx.compose.material:material-icons-core")
     // Optional - Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended:1.6.8")
+    implementation("androidx.compose.material:material-icons-extended:1.7.0")
     // Optional - Add window size utils
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
     // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation("androidx.activity:activity-compose:1.9.2")
     // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     // Optional - Integration with LiveData
 //    implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     // Lifecycle utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
     // navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // https://github.com/skydoves/landscapist
 //    implementation("com.github.skydoves:landscape-bom:2.1.7")
@@ -298,7 +298,7 @@ dependencies {
     implementation("com.github.skydoves:landscapist-placeholder:2.3.6")
     // https://google.github.io/accompanist/
     // https://github.com/google/accompanist
-    val accompanistVersion = "0.34.0"
+    val accompanistVersion = "0.36.0"
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-permissions:$accompanistVersion")
