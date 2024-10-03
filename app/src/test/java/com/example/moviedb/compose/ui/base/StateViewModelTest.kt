@@ -3,13 +3,17 @@ package com.example.moviedb.compose.ui.base
 import com.example.moviedb.data.remote.BaseException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import retrofit2.HttpException
 import java.net.ConnectException
+import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -68,7 +72,12 @@ class StateViewModelTest {
 
     @Test
     fun onError_setsUnauthorizedErrorEventForHttpUnauthorized() = runBlocking {
-        val baseException = BaseException.toUnexpectedError(Throwable("Unauthorized"))
+        val baseException = HttpException(
+            retrofit2.Response.error<Any>(
+                HttpURLConnection.HTTP_UNAUTHORIZED,
+                "".toResponseBody("application/json".toMediaTypeOrNull())
+            )
+        )
         viewModel.onError(baseException)
         assertEquals(ErrorEvent.Unauthorized, viewModel.errorEvent.first())
     }

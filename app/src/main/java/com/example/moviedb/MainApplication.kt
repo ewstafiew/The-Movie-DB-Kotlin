@@ -11,8 +11,15 @@ class MainApplication : Application() {
         super.onCreate()
         MultiDex.install(this)
         if (isDevMode()) {
-            // init timber
-            Timber.plant(Timber.DebugTree())
+            /*
+            init timber log
+            use tag:mdb to filter custom log in android studio/logcat window
+             */
+            Timber.plant(object : Timber.DebugTree() {
+                override fun createStackElementTag(element: StackTraceElement): String? {
+                    return "mdb ${super.createStackElementTag(element)}"
+                }
+            })
         }
     }
 }

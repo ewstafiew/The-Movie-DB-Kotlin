@@ -1,6 +1,6 @@
 package com.example.moviedb.utils
 
-import kotlinx.coroutines.Dispatchers
+/*import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.rules.TestRule
@@ -29,4 +29,4 @@ class TestCoroutineRule : TestRule {
 
     fun runBlockingTest(block: suspend TestCoroutineScope.() -> Unit) =
             testCoroutineScope.runBlockingTest { block() }
-}
+}*/

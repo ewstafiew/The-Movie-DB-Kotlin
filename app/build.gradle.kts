@@ -142,7 +142,7 @@ dependencies {
     // common
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.google.android.material:material:1.12.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.20")
@@ -151,16 +151,16 @@ dependencies {
 
     // List of KTX extensions
     // https://developer.android.com/kotlin/ktx/extensions-list
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.activity:activity-ktx:1.9.2")
-    implementation("androidx.fragment:fragment-ktx:1.8.3")
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
 
     // Lifecycle
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 //    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.8.7")
 
     // Preferences DataStore
     // https://android-developers.googleblog.com/2020/09/prefer-storing-data-with-jetpack.html
@@ -174,19 +174,19 @@ dependencies {
 
     // paging
     // https://developer.android.com/topic/libraries/architecture/paging
-    implementation("androidx.paging:paging-runtime-ktx:3.3.2")
+    implementation("androidx.paging:paging-runtime-ktx:3.3.4")
 
     // navigation
     // https://developer.android.com/jetpack/androidx/releases/navigation
-    implementation("androidx.navigation:navigation-runtime-ktx:2.8.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.0")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.8.4")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.4")
 
     // coroutines
     // https://github.com/Kotlin/kotlinx.coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 
     // moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
@@ -224,7 +224,7 @@ dependencies {
 
     // firebase
     // https://firebase.google.com/docs/android/setup
-    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
@@ -242,19 +242,19 @@ dependencies {
 
     // unit test
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.13.0")
+    testImplementation("org.mockito:mockito-core:5.14.1")
 //    testImplementation("org.mockito:mockito-inline:3.3.3")
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.20")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
 //    testImplementation("org.robolectric:robolectric:4.3")
 
     // compose
     // https://developer.android.com/jetpack/compose/interop/adding
     // https://developer.android.com/jetpack/compose/setup
 //    implementation("androidx.compose.compiler:compiler:1.4.5")
-    val composeBom = platform("androidx.compose:compose-bom:2024.09.00")
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
@@ -270,32 +270,32 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     // Animations
-    implementation("androidx.compose.animation:animation:1.7.0")
+    implementation("androidx.compose.animation:animation:1.7.5")
     // Constraint layout
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0")
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
     // custom design system based on Foundation)
 //    implementation("androidx.compose.material:material-icons-core")
     // Optional - Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended:1.7.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
     // Optional - Add window size utils
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
     // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.activity:activity-compose:1.9.3")
     // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     // Optional - Integration with LiveData
 //    implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     // Lifecycle utilities for Compose
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     // navigation
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // https://github.com/skydoves/landscapist
 //    implementation("com.github.skydoves:landscape-bom:2.1.7")
-    implementation("com.github.skydoves:landscapist-glide:2.3.6")
-    implementation("com.github.skydoves:landscapist-placeholder:2.3.6")
+    implementation("com.github.skydoves:landscapist-glide:2.4.0")
+    implementation("com.github.skydoves:landscapist-placeholder:2.4.0")
     // https://google.github.io/accompanist/
     // https://github.com/google/accompanist
     val accompanistVersion = "0.36.0"
@@ -421,7 +421,7 @@ dependencies {
 }
 
 composeCompiler {
-    enableStrongSkippingMode = true
+//    enableStrongSkippingMode = true
 //    reportsDestination = layout.buildDirectory.dir("compose_compiler")
 //    stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
 }

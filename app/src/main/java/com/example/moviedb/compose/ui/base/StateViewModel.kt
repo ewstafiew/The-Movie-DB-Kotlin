@@ -1,6 +1,5 @@
 package com.example.moviedb.compose.ui.base
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import com.example.moviedb.data.remote.toBaseException
 import kotlinx.coroutines.flow.MutableStateFlow
