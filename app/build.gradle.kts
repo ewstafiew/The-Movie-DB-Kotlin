@@ -248,6 +248,13 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
+    // Ktor API tests
+    testImplementation("io.ktor:ktor-client-core:2.3.12")
+    testImplementation("io.ktor:ktor-client-cio:2.3.12")
+    testImplementation("io.ktor:ktor-client-mock:2.3.12")
+    testImplementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+    testImplementation("io.qameta.allure:allure-junit4:2.24.0")
 //    testImplementation("org.robolectric:robolectric:4.3")
 
     // compose
@@ -431,7 +438,7 @@ kapt {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.11"
 }
 
 /** There are two ways to see test result:
@@ -447,6 +454,44 @@ jacoco {
  *  - At Project name, expand "app", expand "Tasks", expand "coverage"
  *  - Run any test you want
  */
+/**
+ * Запускает только KtorApiTest, генерирует и сразу открывает Allure HTML-отчёт.
+ * Команда: ./gradlew :app:generateApiAllureReport
+ * Отчёт: reports/allureReport/index.html
+ */
+tasks.withType<Test>().configureEach {
+    if (name == "testDevDebugUnitTest") {
+        doFirst {
+            delete("${project.projectDir}/allure-results")
+        }
+        filter {
+            includeTestsMatching("com.example.moviedb.api.KtorApiTest")
+        }
+    }
+}
+
+tasks.register("generateApiAllureReport") {
+    group = "reporting"
+    description = "Run KtorApiTest, generate Allure HTML report and open it"
+    val allureResultsDir = "${project.projectDir}/allure-results"
+    val reportDir = "${rootProject.projectDir}/reports/allureReport"
+
+    dependsOn("testDevDebugUnitTest")
+
+    doLast {
+        exec {
+            commandLine("allure", "generate", allureResultsDir, "-o", reportDir, "--clean")
+        }
+        println("✅ Allure report generated: $reportDir/index.html")
+
+        // Open report via Allure local HTTP server to avoid file:// Loading issue.
+        exec {
+            isIgnoreExitValue = true
+            commandLine("zsh", "-lc", "allure open \"$reportDir\" >/dev/null 2>&1 &")
+        }
+    }
+}
+
 project.afterEvaluate {
     // Grab all build types and product flavors
     val buildTypeNames: List<String> = android.buildTypes.map { it.name }
