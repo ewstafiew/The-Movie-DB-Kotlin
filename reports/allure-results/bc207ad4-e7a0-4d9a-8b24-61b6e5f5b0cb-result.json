@@ -1,0 +1,50 @@
+{
+    "name": "testGetMovieList_ReturnsMovies",
+    "start": 1776601805810,
+    "stop": 1776601805815,
+    "stage": "finished",
+    "description": null,
+    "descriptionHtml": null,
+    "status": "passed",
+    "statusDetails": null,
+    "steps": [],
+    "attachments": [],
+    "parameters": [],
+    "uuid": "bc207ad4-e7a0-4d9a-8b24-61b6e5f5b0cb",
+    "historyId": "c8374d35bf125c2c9f8f1c067d55feca",
+    "fullName": "com.example.moviedb.data.repository.UserRepositoryTest.testGetMovieList_ReturnsMovies",
+    "labels": [
+        {
+            "name": "package",
+            "value": "com.example.moviedb.data.repository"
+        },
+        {
+            "name": "testClass",
+            "value": "com.example.moviedb.data.repository.UserRepositoryTest"
+        },
+        {
+            "name": "testMethod",
+            "value": "testGetMovieList_ReturnsMovies"
+        },
+        {
+            "name": "suite",
+            "value": "com.example.moviedb.data.repository.UserRepositoryTest"
+        },
+        {
+            "name": "host",
+            "value": "MacBook-Pro-Apple-2.local"
+        },
+        {
+            "name": "thread",
+            "value": "5071@MacBook-Pro-Apple-2.local.Test worker(1)"
+        },
+        {
+            "name": "framework",
+            "value": "junit4"
+        },
+        {
+            "name": "language",
+            "value": "kotlin"
+        }
+    ]
+}

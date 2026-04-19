@@ -136,6 +136,14 @@ android {
 //        checkReleaseBuilds = false
 //        abortOnError = false
     }
+    testOptions {
+        unitTests.all {
+            it.systemProperty(
+                "allure.results.directory",
+                rootProject.file("reports/allure-results").absolutePath
+            )
+        }
+    }
 }
 
 dependencies {
@@ -242,6 +250,7 @@ dependencies {
 
     // unit test
     testImplementation("junit:junit:4.13.2")
+    testImplementation("io.qameta.allure:allure-kotlin-junit4:2.4.0")
     testImplementation("org.mockito:mockito-core:5.14.1")
 //    testImplementation("org.mockito:mockito-inline:3.3.3")
     testImplementation("io.mockk:mockk:1.13.12")
