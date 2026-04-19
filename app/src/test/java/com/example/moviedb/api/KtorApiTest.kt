@@ -1,18 +1,14 @@
 package com.example.moviedb.api
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import io.qameta.allure.Description
@@ -23,80 +19,28 @@ import io.qameta.allure.SeverityLevel
 import io.qameta.allure.Story
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AllureRunner::class)
-@Epic("TMDB API")
+@Epic("PokéAPI")
 @Feature("Ktor HTTP Client")
 class KtorApiTest {
 
     private lateinit var client: HttpClient
     private val json = Json { ignoreUnknownKeys = true }
+    private val baseUrl = "https://pokeapi.co/api/v2"
 
     @Before
     fun setup() {
-        val mockEngine = MockEngine { request ->
-            val url = request.url.toString()
-            when {
-                "/discover/movie" in url && "api_key=VALID" in url -> {
-                    respond(
-                        """{"results": [{"id": 1, "title": "Movie A"}]}""",
-                        HttpStatusCode.OK,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-                "/discover/movie" in url && "api_key=INVALID" in url -> {
-                    respond(
-                        """{"success": false, "status_code": 401, "status_message": "Invalid API key"}""",
-                        HttpStatusCode.Unauthorized,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-                "/movie/550" in url && "credits" !in url && "api_key=VALID" in url -> {
-                    respond(
-                        """{"id": 550, "title": "Fight Club", "overview": "Desc"}""",
-                        HttpStatusCode.OK,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-                "/movie/invalid" in url && "credits" !in url -> {
-                    respond(
-                        """{"success": false, "status_code": 404, "status_message": "The resource you requested could not be found."}""",
-                        HttpStatusCode.NotFound,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-                "/movie/550/credits" in url && "api_key=VALID" in url -> {
-                    respond(
-                        """{"id": 550, "cast": [{"id": 10, "name": "Actor A"}], "crew": [{"id": 20, "name": "Director A"}]}""",
-                        HttpStatusCode.OK,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-                "/movie/invalid/credits" in url -> {
-                    respond(
-                        """{"success": false, "status_code": 404, "status_message": "Credits not found"}""",
-                        HttpStatusCode.NotFound,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-                else -> {
-                    respond(
-                        """{"error": "Not found"}""",
-                        HttpStatusCode.NotFound,
-                        headersOf(HttpHeaders.ContentType, "application/json")
-                    )
-                }
-            }
-        }
-
-        client = HttpClient(mockEngine) {
+        client = HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(json)
             }
+            expectSuccess = false
         }
     }
 
@@ -105,92 +49,114 @@ class KtorApiTest {
         client.close()
     }
 
-    // Успешный кейс: корректные входные данные.
+    // Метод 1: GET /pokemon/{name}
+
+    /**
+     * Успешный кейс (корректные данные):
+     * Запрашиваем известного покемона "pikachu".
+     * Ожидаем: статус 200 и поле "name" = "pikachu" в ответе.
+     */
     @Test
-    @Story("Discover Movies")
+    @Story("Pokemon")
     @Severity(SeverityLevel.CRITICAL)
-    @Description("Проверяет метод /discover/movie при корректном API ключе: ожидаем 200 и непустой список.")
-    fun discoverMovie_success_returnsMovieListAnd200() {
+    @Description("GET /pokemon/pikachu при корректном имени: ожидаем 200 и name=pikachu.")
+    fun getPokemon_success_returns200AndCorrectName() {
         runBlocking {
-            val response = client.get("https://api.themoviedb.org/3/discover/movie?api_key=VALID")
+            val response = client.get("$baseUrl/pokemon/pikachu")
             assertEquals(HttpStatusCode.OK, response.status)
-            val payload = json.parseToJsonElement(response.bodyAsText()).jsonObject
-            val results = payload.getValue("results").jsonArray
-            assertTrue(results.isNotEmpty())
-            val title = results.first().jsonObject.getValue("title").jsonPrimitive.content
-            assertEquals("Movie A", title)
+            val body = json.parseToJsonElement(response.bodyAsText()).jsonObject
+            val name = body["name"]?.jsonPrimitive?.content
+            assertEquals("pikachu", name)
         }
     }
 
-    // Ошибочный кейс: при возникновении ошибки.
+    /**
+     * Ошибочный кейс (некорректные данные):
+     * Запрашиваем несуществующего покемона "nonexistent-pokemon-12345".
+     * Ожидаем: статус 404 — ресурс не найден.
+     */
     @Test
-    @Story("Discover Movies")
+    @Story("Pokemon")
     @Severity(SeverityLevel.NORMAL)
-    @Description("Проверяет метод /discover/movie при неверном API ключе: ожидаем 401 и код ошибки в теле.")
-    fun discoverMovie_error_returns401() {
+    @Description("GET /pokemon/nonexistent при несуществующем имени: ожидаем 404.")
+    fun getPokemon_error_returns404ForUnknownPokemon() {
         runBlocking {
-            val response = client.get("https://api.themoviedb.org/3/discover/movie?api_key=INVALID")
-            assertEquals(HttpStatusCode.Unauthorized, response.status)
-            val payload = json.parseToJsonElement(response.bodyAsText()).jsonObject
-            assertEquals("401", payload.getValue("status_code").toString())
-        }
-    }
-
-    // Успешный кейс: корректные входные данные.
-    @Test
-    @Story("Movie Details")
-    @Severity(SeverityLevel.CRITICAL)
-    @Description("Проверяет метод /movie/{id} при валидном id: ожидаем 200 и корректные поля фильма.")
-    fun movieDetails_success_returnsMovieAnd200() {
-        runBlocking {
-            val response = client.get("https://api.themoviedb.org/3/movie/550?api_key=VALID")
-            assertEquals(HttpStatusCode.OK, response.status)
-            val payload = json.parseToJsonElement(response.bodyAsText()).jsonObject
-            assertEquals("550", payload.getValue("id").toString())
-            assertEquals("Fight Club", payload.getValue("title").jsonPrimitive.content)
-        }
-    }
-
-    // Ошибочный кейс: при возникновении ошибки.
-    @Test
-    @Story("Movie Details")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Проверяет метод /movie/{id} при невалидном id: ожидаем 404 и код ошибки в ответе.")
-    fun movieDetails_error_returns404() {
-        runBlocking {
-            val response = client.get("https://api.themoviedb.org/3/movie/invalid?api_key=VALID")
+            val response = client.get("$baseUrl/pokemon/nonexistent-pokemon-12345")
             assertEquals(HttpStatusCode.NotFound, response.status)
-            val payload = json.parseToJsonElement(response.bodyAsText()).jsonObject
-            assertEquals("404", payload.getValue("status_code").toString())
         }
     }
 
-    // Успешный кейс: корректные входные данные.
+    // Метод 2: GET /berry/{name}
+
+    /**
+     * Успешный кейс (корректные данные):
+     * Запрашиваем ягоду "cheri".
+     * Ожидаем: статус 200, поле "name" = "cheri" и наличие поля "growth_time".
+     */
     @Test
-    @Story("Movie Credits")
+    @Story("Berry")
     @Severity(SeverityLevel.CRITICAL)
-    @Description("Проверяет метод /movie/{id}/credits при валидном id: ожидаем 200 и непустые cast/crew.")
-    fun movieCredits_success_returnsCastAndCrew() {
+    @Description("GET /berry/cheri при корректном имени: ожидаем 200 и name=cheri.")
+    fun getBerry_success_returns200AndCorrectName() {
         runBlocking {
-            val response = client.get("https://api.themoviedb.org/3/movie/550/credits?api_key=VALID")
+            val response = client.get("$baseUrl/berry/cheri")
             assertEquals(HttpStatusCode.OK, response.status)
-            val payload = json.parseToJsonElement(response.bodyAsText()).jsonObject
-            assertTrue(payload.getValue("cast").jsonArray.isNotEmpty())
-            assertTrue(payload.getValue("crew").jsonArray.isNotEmpty())
+            val body = json.parseToJsonElement(response.bodyAsText()).jsonObject
+            assertEquals("cheri", body["name"]?.jsonPrimitive?.content)
+            assertNotNull(body["growth_time"])
         }
     }
 
-    // Ошибочный кейс: при возникновении ошибки.
+    /**
+     * Ошибочный кейс (некорректные данные):
+     * Запрашиваем несуществующую ягоду "unknown-berry-xyz".
+     * Ожидаем: статус 404 — ресурс не найден.
+     */
     @Test
-    @Story("Movie Credits")
+    @Story("Berry")
     @Severity(SeverityLevel.NORMAL)
-    @Description("Проверяет метод /movie/{id}/credits при невалидном id: ожидаем 404 и код ошибки.")
-    fun movieCredits_error_returns404() {
+    @Description("GET /berry/unknown при несуществующем имени: ожидаем 404.")
+    fun getBerry_error_returns404ForUnknownBerry() {
         runBlocking {
-            val response = client.get("https://api.themoviedb.org/3/movie/invalid/credits?api_key=VALID")
+            val response = client.get("$baseUrl/berry/unknown-berry-xyz")
             assertEquals(HttpStatusCode.NotFound, response.status)
-            val payload = json.parseToJsonElement(response.bodyAsText()).jsonObject
-            assertEquals("404", payload.getValue("status_code").toString())
+        }
+    }
+
+
+    // Метод 3: GET /move/{name}
+    /**
+     * Успешный кейс (корректные данные):
+     * Запрашиваем атаку "pound".
+     * Ожидаем: статус 200, поле "name" = "pound" и наличие поля "power".
+     */
+    @Test
+    @Story("Move")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("GET /move/pound при корректном имени: ожидаем 200 и name=pound.")
+    fun getMove_success_returns200AndCorrectName() {
+        runBlocking {
+            val response = client.get("$baseUrl/move/pound")
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = json.parseToJsonElement(response.bodyAsText()).jsonObject
+            assertEquals("pound", body["name"]?.jsonPrimitive?.content)
+            assertTrue(body.containsKey("power"))
+        }
+    }
+
+    /**
+     * Ошибочный кейс (некорректные данные):
+     * Запрашиваем несуществующую атаку "superdupernonexistentmove".
+     * Ожидаем: статус 404 — ресурс не найден.
+     */
+    @Test
+    @Story("Move")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("GET /move/unknown при несуществующем имени: ожидаем 404.")
+    fun getMove_error_returns404ForUnknownMove() {
+        runBlocking {
+            val response = client.get("$baseUrl/move/superdupernonexistentmove")
+            assertEquals(HttpStatusCode.NotFound, response.status)
         }
     }
 }
