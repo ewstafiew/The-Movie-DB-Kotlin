@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.moviedb.R
 import com.example.moviedb.compose.toMovieDetail
+import com.example.moviedb.compose.ui.HomeScreenTags
 import com.example.moviedb.data.model.Movie
 import com.example.moviedb.ui.screen.popularmovie.PopularMovieViewModel
 import com.skydoves.landscapist.ImageOptions
@@ -70,11 +72,14 @@ fun HomeScreen(
         Modifier
             .pullRefresh(pullRefreshState)
             .fillMaxSize()
+            .testTag(HomeScreenTags.ROOT)
             .background(color = Color.Black)
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(HomeScreenTags.GRID),
             state = gridState
         ) {
             items(
@@ -111,6 +116,7 @@ fun MovieItem(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(9f / 16f)
+            .testTag(HomeScreenTags.movieItem(movie.id))
             .clickable { onClick.invoke(movie) }
     ) {
         GlideImage(
@@ -135,6 +141,7 @@ fun MovieItem(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(16.dp)
+                    .testTag(HomeScreenTags.movieTitle(movie.id))
                     .fillMaxWidth()
             )
         }
