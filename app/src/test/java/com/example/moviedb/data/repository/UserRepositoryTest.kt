@@ -6,9 +6,13 @@ import com.example.moviedb.data.remote.api.ApiService
 import com.example.moviedb.data.remote.response.GetMovieListResponse
 import com.example.moviedb.data.repository.impl.UserRepositoryImpl
 import io.qameta.allure.kotlin.junit4.AllureRunner
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +21,7 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 @RunWith(AllureRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryTest {
 
 
@@ -53,7 +58,8 @@ class UserRepositoryTest {
 
         val result = repository.getMovieList(params)
 
-        assert(result.results?.size == 2)
+        assertNotNull(result.results)
+        assertEquals(2, result.results?.size)
         Mockito.verify(apiService).getDiscoverMovie(params)
     }
 
@@ -65,7 +71,8 @@ class UserRepositoryTest {
 
         val result = repository.getMovieById("550")
 
-        assert(result.id == "550")
+        assertEquals("550", result.id)
+        assertEquals("Fight Club", result.title)
         Mockito.verify(apiService).getMovie(movieId = "550")
     }
 
@@ -87,7 +94,9 @@ class UserRepositoryTest {
 
         val result = repository.getMovieLocal("1")
 
-        assert(result?.id == "1")
+        assertNotNull(result)
+        assertEquals("1", result?.id)
+        assertEquals("Test", result?.title)
         Mockito.verify(movieDao).getMovie("1")
     }
 
@@ -120,7 +129,9 @@ class UserRepositoryTest {
 
         val result = repository.getMovieListLocal()
 
-        assert(result?.size == 2)
+        assertNotNull(result)
+        assertEquals(2, result?.size)
+        assertTrue(result?.isNotEmpty() == true)
         Mockito.verify(movieDao).getMovieList()
     }
 
@@ -142,7 +153,9 @@ class UserRepositoryTest {
 
         val result = repository.getFavoriteLocal(10, 0)
 
-        assert(result?.size == 1)
+        assertNotNull(result)
+        assertEquals(1, result?.size)
+        assertTrue(result?.firstOrNull()?.isFavorite == true)
         Mockito.verify(movieDao).getFavorite(10, 0)
     }
 
