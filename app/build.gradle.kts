@@ -96,11 +96,15 @@ android {
             applicationIdSuffix = ".dev"
             resValue("string", "app_name", "Movie DB Dev")
             buildConfigField("boolean", "MOCK_DATA", "true")
+            testInstrumentationRunnerArguments["allure.results.directory"] =
+                "/storage/emulated/0/Documents/allure-results"
         }
         create(prdServer) {
             dimension = serverDimension
             resValue("string", "app_name", "Movie DB")
             buildConfigField("boolean", "MOCK_DATA", "false")
+            testInstrumentationRunnerArguments["allure.results.directory"] =
+                "/storage/emulated/0/Documents/allure-results"
         }
     }
     applicationVariants.all {
@@ -254,6 +258,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
     androidTestImplementation("com.kaspersky.android-components:kaspresso:1.5.3")
+    androidTestImplementation("io.qameta.allure:allure-kotlin-junit4:2.4.0")
+    androidTestImplementation("io.qameta.allure:allure-kotlin-android:2.4.0")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.52")
 
     // compose
