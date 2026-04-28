@@ -146,12 +146,14 @@ class UserRepositoryTest {
     // Проверяет, что получение избранных фильмов возвращает ожидаемые записи.
     @Test
     fun testGetFavoriteLocal_ReturnsFavorites() = runTest {
+        val limit = 10
+        val offset = 0
         val mockFavorites = listOf(
             Movie(id = "1", title = "Favorite 1", isFavorite = true)
         )
-        Mockito.`when`(movieDao.getFavorite(10, 0)).thenReturn(mockFavorites)
+        Mockito.`when`(movieDao.getFavorite(limit, offset)).thenReturn(mockFavorites)
 
-        val result = repository.getFavoriteLocal(10, 0)
+        val result = repository.getFavoriteLocal(limit, offset)
 
         assertNotNull(result)
         assertEquals(1, result?.size)
