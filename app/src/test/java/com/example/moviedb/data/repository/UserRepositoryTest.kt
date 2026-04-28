@@ -137,7 +137,6 @@ class UserRepositoryTest {
 
         assertNotNull(result)
         assertEquals(2, result?.size)
-        assertTrue(result?.isNotEmpty() == true)
         Mockito.verify(movieDao).getMovieList()
     }
 
