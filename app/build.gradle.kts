@@ -38,7 +38,7 @@ android {
             "archivesBaseName",
             "MovieDB_${SimpleDateFormat("yyyyMMdd-HHmm").format(Date())}_v${versionName}(${versionCode})"
         )
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.moviedb.HiltTestRunner"
     }
     // check signingKey cmd ./gradlew signingReport
     val signingKeyInfoFile = rootProject.file("signing/release.properties")
@@ -96,11 +96,15 @@ android {
             applicationIdSuffix = ".dev"
             resValue("string", "app_name", "Movie DB Dev")
             buildConfigField("boolean", "MOCK_DATA", "true")
+            testInstrumentationRunnerArguments["allure.results.directory"] =
+                "/storage/emulated/0/Documents/allure-results"
         }
         create(prdServer) {
             dimension = serverDimension
             resValue("string", "app_name", "Movie DB")
             buildConfigField("boolean", "MOCK_DATA", "false")
+            testInstrumentationRunnerArguments["allure.results.directory"] =
+                "/storage/emulated/0/Documents/allure-results"
         }
     }
     applicationVariants.all {
@@ -256,6 +260,14 @@ dependencies {
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
     testImplementation("io.qameta.allure:allure-junit4:2.24.0")
 //    testImplementation("org.robolectric:robolectric:4.3")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
+    androidTestImplementation("com.kaspersky.android-components:kaspresso:1.5.3")
+    androidTestImplementation("io.qameta.allure:allure-kotlin-junit4:2.4.0")
+    androidTestImplementation("io.qameta.allure:allure-kotlin-android:2.4.0")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.52")
 
     // compose
     // https://developer.android.com/jetpack/compose/interop/adding
