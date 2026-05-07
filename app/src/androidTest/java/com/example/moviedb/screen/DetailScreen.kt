@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onAllNodesWithText
 import com.example.moviedb.compose.ui.DetailScreenTags
 
 @OptIn(ExperimentalTestApi::class)
@@ -57,6 +58,13 @@ class DetailScreen(private val composeTest: ComposeTestRule) {
     fun dismissErrorDialog(): DetailScreen = apply {
         composeTest.onNodeWithText("OK", useUnmergedTree = true)
             .performClick()
+    }
+
+    fun assertErrorDialogDismissed(): DetailScreen = apply {
+        composeTest.waitUntil(timeoutMillis = 5_000) {
+            composeTest.onAllNodesWithText("OK", useUnmergedTree = true)
+                .fetchSemanticsNodes().isEmpty()
+        }
     }
 
     fun tapBack(): DetailScreen = apply {

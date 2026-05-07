@@ -50,9 +50,12 @@ class MovieFlowActions(
             .assertNetworkErrorIsShown()
     }
 
-    /** Закрывает диалог с ошибкой на экране деталей. */
+    /** Закрывает диалог с ошибкой на экране деталей
+     * и проверяет, что диалог действительно исчез. */
     fun closeErrorDialog() {
-        detailScreen.dismissErrorDialog()
+        detailScreen
+            .dismissErrorDialog()
+            .assertErrorDialogDismissed()
     }
 
     /** Возвращается с экрана деталей на главный
