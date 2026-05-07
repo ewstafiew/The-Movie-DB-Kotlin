@@ -13,6 +13,7 @@ import com.example.moviedb.ui.screen.main.MainActivity
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import io.qameta.allure.kotlin.Description
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,7 +45,7 @@ class MovieFlowKaspressoTest : TestCase() {
         fakeUserRepository.reset()
     }
 
-    /** Проверяет, что при запуске приложения отображается splash-экран с логотипом. */
+    @Description("Проверяет, что при запуске приложения отображается splash-экран с логотипом.")
     @Test
     fun splashScreen_displaysLogoOnAppStart() {
         run {
@@ -59,8 +60,8 @@ class MovieFlowKaspressoTest : TestCase() {
         }
     }
 
-    /** Проверяет, что на главном экране отображается список фильмов
-     *  и из него можно перейти в детали фильма. */
+    @Description("Проверяет, что на главном экране отображается список " +
+            "фильмов и из него можно перейти в детали фильма.")
     @Test
     fun homeScreen_opensMovieDetailsFromMovieCard() {
         run {
@@ -84,15 +85,16 @@ class MovieFlowKaspressoTest : TestCase() {
         }
     }
 
-    /** Проверяет ошибочный сценарий: при сбое загрузки деталей фильма
-     * показывается сообщение об ошибке и можно вернуться назад. */
+    @Description("Проверяет ошибочный сценарий: при сбое загрузки деталей " +
+            "фильма показывается сообщение об ошибке и можно вернуться назад.")
     @Test
     fun detailScreen_showsNetworkErrorAndReturnsBackToHome() {
         run {
             fakeUserRepository.makeMovieDetailFailWithNetworkError()
             val scenario = launchActivity<ComposeActivity>()
             try {
-                step("Открываем главный экран и переходим к фильму с ошибкой загрузки деталей") {
+                step("Открываем главный экран и переходим к фильму с ошибкой" +
+                        "загрузки деталей") {
                     movieFlowActions.openMovieFromHome(movieId = "movie_1", title = "Inception")
                 }
 
