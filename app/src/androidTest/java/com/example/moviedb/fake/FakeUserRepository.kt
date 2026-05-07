@@ -69,7 +69,7 @@ class FakeUserRepository @Inject constructor() : UserRepository {
 
     override suspend fun insertDB(list: List<Movie>) = Unit
 
-    override suspend fun updateDB(movie: Movie) = Unit
+    override suspend fun updateDB(movie: Movie) = TODO("не используется в тесте")
 
     override suspend fun getMovieListLocal(): List<Movie> = movies
 
