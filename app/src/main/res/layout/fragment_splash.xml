@@ -11,8 +11,10 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/splashLogo"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:contentDescription="splash_logo"
             android:src="@mipmap/ic_launcher_foreground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"

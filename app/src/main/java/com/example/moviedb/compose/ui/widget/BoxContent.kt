@@ -18,11 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.example.moviedb.R
 import com.example.moviedb.compose.ui.base.ErrorEvent
 import com.example.moviedb.compose.ui.base.ErrorType
 import com.example.moviedb.compose.ui.base.StateViewModel
+import com.example.moviedb.compose.ui.testtags.AppiumTags
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -79,6 +83,9 @@ fun ErrorDialog(errorEvent: ErrorEvent, onClick: () -> Unit) {
     when (errorEvent.type) {
         ErrorType.NETWORK -> {
             AlertDialog(
+                modifier = Modifier
+                    .testTag(AppiumTags.ERROR_DIALOG)
+                    .semantics { contentDescription = AppiumTags.ERROR_DIALOG },
                 onDismissRequest = {
                 },
                 title = {
@@ -88,7 +95,12 @@ fun ErrorDialog(errorEvent: ErrorEvent, onClick: () -> Unit) {
                     Text(stringResource(id = R.string.no_internet_connection))
                 },
                 confirmButton = {
-                    Button(onClick = onClick) {
+                    Button(
+                        onClick = onClick,
+                        modifier = Modifier
+                            .testTag(AppiumTags.ERROR_DIALOG_OK_BUTTON)
+                            .semantics { contentDescription = AppiumTags.ERROR_DIALOG_OK_BUTTON }
+                    ) {
                         Text(stringResource(id = R.string.ok))
                     }
                 },

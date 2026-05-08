@@ -24,13 +24,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.moviedb.R
 import com.example.moviedb.compose.ui.widget.BoxContent
+import com.example.moviedb.compose.ui.testtags.AppiumTags
 import com.example.moviedb.data.model.Movie
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.components.rememberImageComponent
@@ -73,6 +77,8 @@ fun MovieDetailBody(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .testTag(AppiumTags.DETAIL_SCREEN)
+            .semantics { contentDescription = AppiumTags.DETAIL_SCREEN }
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             GlideImage(
@@ -91,6 +97,8 @@ fun MovieDetailBody(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
+                    .testTag(AppiumTags.DETAIL_BACK_BUTTON)
+                    .semantics { contentDescription = AppiumTags.DETAIL_BACK_BUTTON }
                     .clickable {
                         onClickBack.invoke()
                     }
@@ -118,6 +126,8 @@ fun MovieDetailEmptyBody(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .testTag(AppiumTags.DETAIL_SCREEN)
+            .semantics { contentDescription = AppiumTags.DETAIL_SCREEN }
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
@@ -127,6 +137,8 @@ fun MovieDetailEmptyBody(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
+                    .testTag(AppiumTags.DETAIL_BACK_BUTTON)
+                    .semantics { contentDescription = AppiumTags.DETAIL_BACK_BUTTON }
                     .clickable {
                         onClickBack.invoke()
                     }
