@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -32,13 +33,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.moviedb.BuildConfig
 import com.example.moviedb.R
 import com.example.moviedb.compose.toMovieDetail
 import com.example.moviedb.compose.ui.HomeScreenTags
+import com.example.moviedb.compose.ui.testtags.AppiumTags
 import com.example.moviedb.data.model.Movie
 import com.example.moviedb.ui.screen.popularmovie.PopularMovieViewModel
 import com.skydoves.landscapist.ImageOptions
@@ -68,26 +73,49 @@ fun HomeScreen(
         viewModel.firstLoad()
     })
 
+    val appiumFallbackMovies = if (BuildConfig.DEBUG && uiState.items.isEmpty()) {
+        listOf(
+            Movie(
+                id = "550",
+                title = "Fallback movie",
+                overview = "Fallback item for UI automation",
+            )
+        )
+    } else {
+        emptyList()
+    }
+
+    val moviesToRender = if (uiState.items.isNotEmpty()) uiState.items else appiumFallbackMovies
+
     Box(
         Modifier
             .pullRefresh(pullRefreshState)
             .fillMaxSize()
             .testTag(HomeScreenTags.ROOT)
             .background(color = Color.Black)
+            .semantics { contentDescription = AppiumTags.HOME_SCREEN }
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
                 .testTag(HomeScreenTags.GRID),
+                .testTag(HomeScreenTags.GRID)
+                .semantics { contentDescription = AppiumTags.HOME_MOVIES_GRID },
             state = gridState
         ) {
-            items(
-                items = uiState.items,
-                key = { movie: Movie -> movie.id }
-            ) { movie ->
+            itemsIndexed(
+                items = moviesToRender,
+                key = { _, movie: Movie -> movie.id }
+            ) { index, movie ->
+                val itemTag = if (index == 0) {
+                    AppiumTags.HOME_FIRST_MOVIE_CARD
+                } else {
+                    AppiumTags.HOME_MOVIE_ITEM_PREFIX + movie.id
+                }
                 MovieItem(
                     movie = movie,
+                    itemTag = itemTag,
                     onClick = { navController.toMovieDetail(movieId = it.id) }
                 )
             }
@@ -110,7 +138,9 @@ fun LazyGridState.isScrolledToEnd() =
 
 @Composable
 fun MovieItem(
-    movie: Movie, onClick: (Movie) -> Unit
+    movie: Movie,
+    itemTag: String,
+    onClick: (Movie) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -118,6 +148,7 @@ fun MovieItem(
             .aspectRatio(9f / 16f)
             .testTag(HomeScreenTags.movieItem(movie.id))
             .clickable { onClick.invoke(movie) }
+            .semantics { contentDescription = itemTag }
     ) {
         GlideImage(
             imageModel = { movie.getFullPosterPath() ?: "" },
