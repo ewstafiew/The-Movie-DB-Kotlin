@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","930","detailScreen_showsNetworkErrorAndReturnsBackToHome","","2026-04-27","passed","2026-04-27","","com.example.moviedb.ui.kaspresso.MovieFlowKaspressoTest","com.example.moviedb.ui.kaspresso.MovieFlowKaspressoTest",""
+"","762","splashScreen_displaysLogoOnAppStart","","2026-04-27","passed","2026-04-27","","com.example.moviedb.ui.kaspresso.MovieFlowKaspressoTest","com.example.moviedb.ui.kaspresso.MovieFlowKaspressoTest",""
+"","412","homeScreen_opensMovieDetailsFromMovieCard","","2026-04-27","passed","2026-04-27","","com.example.moviedb.ui.kaspresso.MovieFlowKaspressoTest","com.example.moviedb.ui.kaspresso.MovieFlowKaspressoTest",""

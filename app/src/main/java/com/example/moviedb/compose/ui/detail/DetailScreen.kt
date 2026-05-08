@@ -24,12 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.moviedb.R
+import com.example.moviedb.compose.ui.DetailScreenTags
 import com.example.moviedb.compose.ui.widget.BoxContent
 import com.example.moviedb.data.model.Movie
 import com.skydoves.landscapist.ImageOptions
@@ -72,6 +75,7 @@ fun MovieDetailBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .testTag(DetailScreenTags.ROOT)
             .background(Color.Black)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -86,11 +90,12 @@ fun MovieDetailBody(
             )
             Image(
                 painterResource(R.drawable.ic_arrow_back_white_24dp),
-                contentDescription = "",
+                contentDescription = stringResource(id = R.string.navigate_back),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
+                    .testTag(DetailScreenTags.BACK_BUTTON)
                     .clickable {
                         onClickBack.invoke()
                     }
@@ -100,12 +105,26 @@ fun MovieDetailBody(
         Text(
             movie.title ?: "",
             color = Color.White,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .testTag(DetailScreenTags.TITLE),
             fontSize = 20.sp,
         )
-        Text(text = movie.releaseDate ?: "", color = Color.White)
-        Text(text = movie.overview ?: "", color = Color.White)
-        Text(text = movie.voteAverage.toString(), color = Color.White)
+        Text(
+            text = movie.releaseDate ?: "",
+            color = Color.White,
+            modifier = Modifier.testTag(DetailScreenTags.RELEASE_DATE)
+        )
+        Text(
+            text = movie.overview ?: "",
+            color = Color.White,
+            modifier = Modifier.testTag(DetailScreenTags.OVERVIEW)
+        )
+        Text(
+            text = movie.voteAverage.toString(),
+            color = Color.White,
+            modifier = Modifier.testTag(DetailScreenTags.RATING)
+        )
     }
 }
 
@@ -117,16 +136,18 @@ fun MovieDetailEmptyBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .testTag(DetailScreenTags.EMPTY_STATE)
             .background(Color.Black)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
                 painterResource(R.drawable.ic_arrow_back_white_24dp),
-                contentDescription = "",
+                contentDescription = stringResource(id = R.string.navigate_back),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
+                    .testTag(DetailScreenTags.BACK_BUTTON)
                     .clickable {
                         onClickBack.invoke()
                     }
@@ -143,10 +164,12 @@ fun MovieDetailEmptyBody(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Tap to refresh",
-                    modifier = Modifier.clickable {
-                        viewModel.doRefresh()
-                    },
+                    text = stringResource(id = R.string.tap_to_refresh),
+                    modifier = Modifier
+                        .testTag(DetailScreenTags.REFRESH_ACTION)
+                        .clickable {
+                            viewModel.doRefresh()
+                        },
                     color = Color.White
                 )
             }
