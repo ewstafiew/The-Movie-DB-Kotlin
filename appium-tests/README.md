@@ -30,6 +30,13 @@ cd /Users/evstafevigoraleksandrovic/StudioProjects/The-Movie-DB-Kotlin
 ./gradlew :appium-tests:test
 ```
 
+4. Сгенерировать Allure-отчет в корневой папке `reports`:
+
+```bash
+cd /Users/evstafevigoraleksandrovic/StudioProjects/The-Movie-DB-Kotlin
+./gradlew :appium-tests:runMovieFlowWithAllure
+```
+
 ## Запуск только одного класса
 
 ```bash
@@ -49,4 +56,9 @@ cd /Users/evstafevigoraleksandrovic/StudioProjects/The-Movie-DB-Kotlin
 ```
 
 По умолчанию тесты помечены как `skipped`, если Appium server недоступен.
+
+## Где лежит отчет
+
+- Результаты тестов Allure: `reports/allure-results/task-3-appium`
+- HTML-отчет Allure: `reports/allure-report/task-3-appium/index.html`
 
