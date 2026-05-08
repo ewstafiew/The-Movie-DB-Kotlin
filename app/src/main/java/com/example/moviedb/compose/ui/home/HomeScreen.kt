@@ -99,7 +99,6 @@ fun HomeScreen(
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
-                .testTag(HomeScreenTags.GRID),
                 .testTag(HomeScreenTags.GRID)
                 .semantics { contentDescription = AppiumTags.HOME_MOVIES_GRID },
             state = gridState

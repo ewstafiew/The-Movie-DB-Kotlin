@@ -480,24 +480,33 @@ jacoco {
  * Команда: ./gradlew :app:generateApiAllureReport
  * Отчёт: reports/allureReport/index.html
  */
-tasks.withType<Test>().configureEach {
-    if (name == "testDevDebugUnitTest") {
-        doFirst {
-            delete("${project.projectDir}/allure-results")
-        }
-        filter {
-            includeTestsMatching("com.example.moviedb.api.KtorApiTest")
-        }
+tasks.register<Test>("testKtorApiDevDebugUnitTest") {
+    group = "verification"
+    description = "Run only KtorApiTest on devDebug unit-test classpath"
+
+    doFirst {
+        delete(rootProject.file("reports/allure-results"))
+    }
+    filter {
+        includeTestsMatching("com.example.moviedb.api.KtorApiTest")
+    }
+}
+
+afterEvaluate {
+    tasks.named<Test>("testKtorApiDevDebugUnitTest").configure {
+        val baseTask = tasks.named<Test>("testDevDebugUnitTest").get()
+        testClassesDirs = baseTask.testClassesDirs
+        classpath = baseTask.classpath
     }
 }
 
 tasks.register("generateApiAllureReport") {
     group = "reporting"
     description = "Run KtorApiTest, generate Allure HTML report and open it"
-    val allureResultsDir = "${project.projectDir}/allure-results"
+    val allureResultsDir = "${rootProject.projectDir}/reports/allure-results"
     val reportDir = "${rootProject.projectDir}/reports/allureReport"
 
-    dependsOn("testDevDebugUnitTest")
+    dependsOn("testKtorApiDevDebugUnitTest")
 
     doLast {
         exec {
@@ -513,6 +522,19 @@ tasks.register("generateApiAllureReport") {
     }
 }
 
+tasks.register("openDevDebugCoverage") {
+    group = "coverage"
+    description = "Generate devDebug Jacoco report and open HTML in browser"
+    dependsOn("testDevDebugUnitTestCoverage")
+
+    doLast {
+        val reportPath = "${project.layout.buildDirectory.get().asFile}/reports/jacoco/testDevDebugUnitTestCoverage/html/index.html"
+        exec {
+            commandLine("open", reportPath)
+        }
+    }
+}
+
 project.afterEvaluate {
     // Grab all build types and product flavors
     val buildTypeNames: List<String> = android.buildTypes.map { it.name }
@@ -522,12 +544,9 @@ project.afterEvaluate {
     productFlavorNames.forEach { productFlavorName ->
         buildTypeNames.forEach { buildTypeName ->
             val sourceName: String
-            val sourcePath: String
             if (productFlavorName.isEmpty()) {
-                sourcePath = buildTypeName
                 sourceName = buildTypeName
             } else {
-                sourcePath = "${productFlavorName}/${buildTypeName}"
                 sourceName = "${productFlavorName}${
                     buildTypeName.replaceFirstChar {
                         if (it.isLowerCase()) it.titlecase(
@@ -579,12 +598,14 @@ project.afterEvaluate {
                 )
                 //Explain to Jacoco where are you .class file java and kotlin
                 classDirectories.setFrom(
-                    fileTree("${project.layout.buildDirectory}/intermediates/classes/${sourcePath}").exclude(
-                        excludeFiles
-                    ),
-                    fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/${sourceName}").exclude(
-                        excludeFiles
-                    )
+                    fileTree(project.layout.buildDirectory.dir("intermediates/javac/$sourceName").get().asFile) {
+                        include("**/classes/**/*.class")
+                        exclude(excludeFiles)
+                    },
+                    fileTree(project.layout.buildDirectory.dir("tmp/kotlin-classes/$sourceName").get().asFile) {
+                        include("**/*.class")
+                        exclude(excludeFiles)
+                    }
                 )
                 val coverageSourceDirs = arrayListOf(
                     "src/main/java",
@@ -595,7 +616,7 @@ project.afterEvaluate {
                 //Explain to Jacoco where is your source code
                 sourceDirectories.setFrom(files(coverageSourceDirs))
                 //execute file .exec to generate data report
-                executionData.setFrom(files("${project.layout.buildDirectory}/jacoco/${testTaskName}.exec"))
+                executionData.setFrom(project.layout.buildDirectory.file("jacoco/${testTaskName}.exec"))
                 reports {
                     xml.required.set(true)
                     html.required.set(true)
