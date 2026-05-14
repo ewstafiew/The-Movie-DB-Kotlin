@@ -38,7 +38,7 @@ android {
             "archivesBaseName",
             "MovieDB_${SimpleDateFormat("yyyyMMdd-HHmm").format(Date())}_v${versionName}(${versionCode})"
         )
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.moviedb.HiltTestRunner"
     }
     // check signingKey cmd ./gradlew signingReport
     val signingKeyInfoFile = rootProject.file("signing/release.properties")
@@ -96,11 +96,15 @@ android {
             applicationIdSuffix = ".dev"
             resValue("string", "app_name", "Movie DB Dev")
             buildConfigField("boolean", "MOCK_DATA", "true")
+            testInstrumentationRunnerArguments["allure.results.directory"] =
+                "/storage/emulated/0/Documents/allure-results"
         }
         create(prdServer) {
             dimension = serverDimension
             resValue("string", "app_name", "Movie DB")
             buildConfigField("boolean", "MOCK_DATA", "false")
+            testInstrumentationRunnerArguments["allure.results.directory"] =
+                "/storage/emulated/0/Documents/allure-results"
         }
     }
     applicationVariants.all {
@@ -135,6 +139,14 @@ android {
     lint {
 //        checkReleaseBuilds = false
 //        abortOnError = false
+    }
+    testOptions {
+        unitTests.all {
+            it.systemProperty(
+                "allure.results.directory",
+                rootProject.file("reports/allure-results").absolutePath
+            )
+        }
     }
 }
 
@@ -242,13 +254,29 @@ dependencies {
 
     // unit test
     testImplementation("junit:junit:4.13.2")
+    testImplementation("io.qameta.allure:allure-kotlin-junit4:2.4.0")
     testImplementation("org.mockito:mockito-core:5.14.1")
 //    testImplementation("org.mockito:mockito-inline:3.3.3")
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
+    // Ktor API tests
+    testImplementation("io.ktor:ktor-client-core:2.3.12")
+    testImplementation("io.ktor:ktor-client-cio:2.3.12")
+    testImplementation("io.ktor:ktor-client-mock:2.3.12")
+    testImplementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+    testImplementation("io.qameta.allure:allure-junit4:2.24.0")
 //    testImplementation("org.robolectric:robolectric:4.3")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
+    androidTestImplementation("com.kaspersky.android-components:kaspresso:1.5.3")
+    androidTestImplementation("io.qameta.allure:allure-kotlin-junit4:2.4.0")
+    androidTestImplementation("io.qameta.allure:allure-kotlin-android:2.4.0")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.52")
 
     // compose
     // https://developer.android.com/jetpack/compose/interop/adding
@@ -431,7 +459,7 @@ kapt {
 }
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.11"
 }
 
 /** There are two ways to see test result:
@@ -447,6 +475,66 @@ jacoco {
  *  - At Project name, expand "app", expand "Tasks", expand "coverage"
  *  - Run any test you want
  */
+/**
+ * Запускает только KtorApiTest, генерирует и сразу открывает Allure HTML-отчёт.
+ * Команда: ./gradlew :app:generateApiAllureReport
+ * Отчёт: reports/allureReport/index.html
+ */
+tasks.register<Test>("testKtorApiDevDebugUnitTest") {
+    group = "verification"
+    description = "Run only KtorApiTest on devDebug unit-test classpath"
+
+    doFirst {
+        delete(rootProject.file("reports/allure-results"))
+    }
+    filter {
+        includeTestsMatching("com.example.moviedb.api.KtorApiTest")
+    }
+}
+
+afterEvaluate {
+    tasks.named<Test>("testKtorApiDevDebugUnitTest").configure {
+        val baseTask = tasks.named<Test>("testDevDebugUnitTest").get()
+        testClassesDirs = baseTask.testClassesDirs
+        classpath = baseTask.classpath
+    }
+}
+
+tasks.register("generateApiAllureReport") {
+    group = "reporting"
+    description = "Run KtorApiTest, generate Allure HTML report and open it"
+    val allureResultsDir = "${rootProject.projectDir}/reports/allure-results"
+    val reportDir = "${rootProject.projectDir}/reports/allureReport"
+
+    dependsOn("testKtorApiDevDebugUnitTest")
+
+    doLast {
+        exec {
+            commandLine("allure", "generate", allureResultsDir, "-o", reportDir, "--clean")
+        }
+        println("✅ Allure report generated: $reportDir/index.html")
+
+        // Open report via Allure local HTTP server to avoid file:// Loading issue.
+        exec {
+            isIgnoreExitValue = true
+            commandLine("zsh", "-lc", "allure open \"$reportDir\" >/dev/null 2>&1 &")
+        }
+    }
+}
+
+tasks.register("openDevDebugCoverage") {
+    group = "coverage"
+    description = "Generate devDebug Jacoco report and open HTML in browser"
+    dependsOn("testDevDebugUnitTestCoverage")
+
+    doLast {
+        val reportPath = "${project.layout.buildDirectory.get().asFile}/reports/jacoco/testDevDebugUnitTestCoverage/html/index.html"
+        exec {
+            commandLine("open", reportPath)
+        }
+    }
+}
+
 project.afterEvaluate {
     // Grab all build types and product flavors
     val buildTypeNames: List<String> = android.buildTypes.map { it.name }
@@ -456,12 +544,9 @@ project.afterEvaluate {
     productFlavorNames.forEach { productFlavorName ->
         buildTypeNames.forEach { buildTypeName ->
             val sourceName: String
-            val sourcePath: String
             if (productFlavorName.isEmpty()) {
-                sourcePath = buildTypeName
                 sourceName = buildTypeName
             } else {
-                sourcePath = "${productFlavorName}/${buildTypeName}"
                 sourceName = "${productFlavorName}${
                     buildTypeName.replaceFirstChar {
                         if (it.isLowerCase()) it.titlecase(
@@ -513,12 +598,14 @@ project.afterEvaluate {
                 )
                 //Explain to Jacoco where are you .class file java and kotlin
                 classDirectories.setFrom(
-                    fileTree("${project.layout.buildDirectory}/intermediates/classes/${sourcePath}").exclude(
-                        excludeFiles
-                    ),
-                    fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/${sourceName}").exclude(
-                        excludeFiles
-                    )
+                    fileTree(project.layout.buildDirectory.dir("intermediates/javac/$sourceName").get().asFile) {
+                        include("**/classes/**/*.class")
+                        exclude(excludeFiles)
+                    },
+                    fileTree(project.layout.buildDirectory.dir("tmp/kotlin-classes/$sourceName").get().asFile) {
+                        include("**/*.class")
+                        exclude(excludeFiles)
+                    }
                 )
                 val coverageSourceDirs = arrayListOf(
                     "src/main/java",
@@ -529,7 +616,7 @@ project.afterEvaluate {
                 //Explain to Jacoco where is your source code
                 sourceDirectories.setFrom(files(coverageSourceDirs))
                 //execute file .exec to generate data report
-                executionData.setFrom(files("${project.layout.buildDirectory}/jacoco/${testTaskName}.exec"))
+                executionData.setFrom(project.layout.buildDirectory.file("jacoco/${testTaskName}.exec"))
                 reports {
                     xml.required.set(true)
                     html.required.set(true)

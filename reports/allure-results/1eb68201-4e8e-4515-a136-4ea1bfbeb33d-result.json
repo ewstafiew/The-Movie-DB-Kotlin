@@ -1,0 +1,50 @@
+{
+    "name": "testDeleteAllLocal_CallsDao",
+    "start": 1776963522407,
+    "stop": 1776963522411,
+    "stage": "finished",
+    "description": null,
+    "descriptionHtml": null,
+    "status": "passed",
+    "statusDetails": null,
+    "steps": [],
+    "attachments": [],
+    "parameters": [],
+    "uuid": "1eb68201-4e8e-4515-a136-4ea1bfbeb33d",
+    "historyId": "b29ea5aaae73e228e6e4d0b0d5a1921f",
+    "fullName": "com.example.moviedb.data.repository.UserRepositoryTest.testDeleteAllLocal_CallsDao",
+    "labels": [
+        {
+            "name": "package",
+            "value": "com.example.moviedb.data.repository"
+        },
+        {
+            "name": "testClass",
+            "value": "com.example.moviedb.data.repository.UserRepositoryTest"
+        },
+        {
+            "name": "testMethod",
+            "value": "testDeleteAllLocal_CallsDao"
+        },
+        {
+            "name": "suite",
+            "value": "com.example.moviedb.data.repository.UserRepositoryTest"
+        },
+        {
+            "name": "host",
+            "value": "MacBook-Pro-Apple-2.local"
+        },
+        {
+            "name": "thread",
+            "value": "30062@MacBook-Pro-Apple-2.local.Test worker(1)"
+        },
+        {
+            "name": "framework",
+            "value": "junit4"
+        },
+        {
+            "name": "language",
+            "value": "kotlin"
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+{
+    "name": "testInsertLocalMultiple_CallsDao",
+    "start": 1776963522401,
+    "stop": 1776963522404,
+    "stage": "finished",
+    "description": null,
+    "descriptionHtml": null,
+    "status": "passed",
+    "statusDetails": null,
+    "steps": [],
+    "attachments": [],
+    "parameters": [],
+    "uuid": "00fde760-64b2-4f4e-b681-a87d363ad9e7",
+    "historyId": "2e3cdda56d6054ab1f9a6fa5b5cc88e",
+    "fullName": "com.example.moviedb.data.repository.UserRepositoryTest.testInsertLocalMultiple_CallsDao",
+    "labels": [
+        {
+            "name": "package",
+            "value": "com.example.moviedb.data.repository"
+        },
+        {
+            "name": "testClass",
+            "value": "com.example.moviedb.data.repository.UserRepositoryTest"
+        },
+        {
+            "name": "testMethod",
+            "value": "testInsertLocalMultiple_CallsDao"
+        },
+        {
+            "name": "suite",
+            "value": "com.example.moviedb.data.repository.UserRepositoryTest"
+        },
+        {
+            "name": "host",
+            "value": "MacBook-Pro-Apple-2.local"
+        },
+        {
+            "name": "thread",
+            "value": "30062@MacBook-Pro-Apple-2.local.Test worker(1)"
+        },
+        {
+            "name": "framework",
+            "value": "junit4"
+        },
+        {
+            "name": "language",
+            "value": "kotlin"
+        }
+    ]
+}
